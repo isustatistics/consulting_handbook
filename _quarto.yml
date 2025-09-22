@@ -4,7 +4,7 @@ project:
 book:
   title: "Consulting Handbook"
   author: "Jarad Niemi"
-  date: "9/17/2025"
+  date: "2025-09-22"
   chapters:
     - index.qmd
     - intro.qmd
@@ -21,5 +21,5 @@ format:
   pdf:
     documentclass: scrreprt
 
-editor: visual
+editor: source
 
