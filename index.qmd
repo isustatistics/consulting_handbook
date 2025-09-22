@@ -1,6 +1,7 @@
 # Preface {.unnumbered}
 
-This is a Quarto book.
+This book is intended for consultants in the Iowa State University Statistical Consulting
+group.
 
 To learn more about Quarto books visit <https://quarto.org/docs/books>.
 
