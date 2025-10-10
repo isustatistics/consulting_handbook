@@ -1,7 +1,0 @@
-# Preface {.unnumbered}
-
-In today’s data-driven world, statistical consulting plays a vital role in supporting research across all domains. This handbook is designed to serve as a practical guide for statistical consultants in a university environment, and is divided into three sections: Client Interactions, Statistical Methodology, and Case Studies.
-
-This handbook has been shaped by years of experience in [statistical consulting at Iowa State University](https://www.stat.iastate.edu/statistical-consulting) and inspired by [Statistical Consulting by Cabrera and McDougall](https://link.springer.com/book/10.1007/978-1-4757-3663-2). Our goal is to empower consultants to approach each project with confidence, curiosity, and a commitment to excellence.
-
-We hope this handbook becomes a trusted companion in your consulting journey and enhance impact of your work across the university community.
