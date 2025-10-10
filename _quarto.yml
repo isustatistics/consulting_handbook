@@ -21,7 +21,6 @@ book:
       chapters:
       - example_study.qmd
       
-    - summary.qmd
     - references.qmd
 
 bibliography: references.bib
