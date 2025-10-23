@@ -30,6 +30,8 @@ format:
     theme:
       - cosmo
       - brand
+    code-fold: show
+    code-tools: true
   pdf:
     documentclass: scrreprt
 
