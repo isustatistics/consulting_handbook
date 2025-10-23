@@ -1,7 +1,384 @@
 # ANOVA Nuances
 
-In summary, this book has no content whatsoever.
+## Sums of Squares Refresher
+
+The three common types of Sums of Squares (SS) are equivalent for balanced data: Type I, II, and III (I believe SAS is to blame for the unhelpful naming). These SS only differ when data is unbalanced.
+
+Sums of Squares can be thought of in many different ways, from calculating squared distances from the regression lines and group means to subtracting projection matrices with nested column spaces. We can consider the SS as **sequential F-tests for a null or alternative model** (from The Statistical Sleuth), where the scaled difference in SS (alternative - null) form the numerator in the F-test. This can also be thought of in a regression context with setting some coefficients to zero. Each of the three SS types have a particular style of F-tests, which are explained below.
+
+Notice that **the F-test for the highest order interaction is the same for each SS type.**
+
+**Type I SS are sequential**—the order of main effects matters! Notice that for effect A, it's just the SS of A given the intercept, but for effect B it's the SS of B given the intercept and A. Type I SS are the only SS that add to the total SS with unbalanced data; Type II and III SS do not add up to anything special with unbalanced data.
+
+| Variable | Null Model         | Alternative Model |
+|----------|--------------------|-------------------|
+| A        | 1 (Intercept-only) | A                 |
+| B        | A                  | A + B             |
+| AB       | A + B              | A + B + AB        |
+
+If we have the variables in a meaningful order, we may be interested in the whole sequence of tests formed by Type I SS. 
+
+**Type II SS are hierarchical.** This SS ignores interactions when testing for main effects (i.e. the interaction is excluded from both the null and alternative model). Type II SS are rarely used.
+
+| Variable | Null Model | Alternative Model |
+|----------|------------|-------------------|
+| A        | B          | A + B             |
+| B        | A          | A + B             |
+| AB       | A + B      | A + B + AB        |
+
+**Type III SS consider dropping one term at a time.** Only Type III SS account for all other terms in the model. The corresponding ANOVA F-tests can be used to test for main effects and interactions.
+
+| Variable | Null Model | Alternative Model |
+|----------|------------|-------------------|
+| A        | B + AB     | A + B + AB        |
+| B        | A + AB     | A + B + AB        |
+| AB       | A + B      | A + B + AB        |
+
+**Type IV SS are only relevant for factorial designs with missing cells** (i.e. fractional factorials) and are equivalent to Type III when there are no missing cells.
+
+**Putting it all together**, the below table is an alternative view of three SS types, taken from slide 60 of Dr. Dan Nettleton's STAT 0510 lecture [8: Analysis of Variance for Unbalanced Two-Factor Experiments](https://dnett.github.io/S510/08ANOVAunbalancedTwoFactor.pdf). The model term(s) on the right being conditioned on form the null model, whereas the term on the left is being added to the null model to form the alternative model.
+
+| Source | Type I             | Type II            | Type III           |
+|--------|--------------------|--------------------|--------------------|
+| A      | SS (A \| 1)        | SS (A \| 1, B)     | SS (A \| 1, B, AB) |
+| B      | SS (B \| 1, A)     | SS (B \| 1, A)     | SS (B \| 1, A, AB) |
+| AB     | SS (AB \| 1, A, B) | SS (AB \| 1, A, B) | SS (AB \| 1, A, B) |
+
+The following slide in Dr. Nettleton's lecture has this table for 3 factors (see slide 61).
+
+Rather than using these default ANOVA tables, you can construct specific tests to address specific scientific questions. In R, this would look something like
+
+```{r m1 vs m2, engine='verbatim'}
+anova(m1, m2)
+```
+
+where m1 is the null model and m2 is the alternative model.
+
+When you test a null vs alternative model this way in R, the F statistic and p-value will only match the ANOVA table if the alternative model is the full model containing every term. The SS and Means Squares (MS) will all be the same. Only Type III SS always specify the alternative model as the full model.
+
+## Changing SS Types
+
+### In SAS
+
+Specifying the SS type in SAS is very simple - you only need to specify `/ ss3` in the model statement for `proc glm` or `method = type3` in  `proc mixed`. For example, for Type III
+
+```{r SAS Type III, engine='verbatim'}
+/* proc glm */
+proc glm data=dat;
+	class x1 x2;
+	model y = x1 x2 x1*x2 / ss3;
+run;
+
+
+/* proc mixed */
+proc mixed data=dat method = type3;
+	class x1 x2;
+	model y = x1 x2 x1*x2;
+run;
+```
+
+### In R
+
+Specifying the SS type in R is tricky.
+
+`anova` in base R calculates Type I SS. For example,
+
+```{r SS I example, engine='verbatim'}
+dat_lm <- lm(y ~ x1 * x2, data=dat)
+anova(dat_lm)
+
+# make sure treatment variables are factors!
+```
+
+The `car::Anova` function allows for Type II and III SS, however the so-called Type III SS does not match `emmeans::joint_tests` or SAS unless you switch to an orthogonal basis.
+
+For Type II,
+
+```{r SS II example, engine='verbatim'}
+car::Anova(dat_lm, type = 2)
+```
+
+For Type III, use `emmeans::joint_tests`
+
+```{r SS III example, engine='verbatim'}
+emmeans::joint_tests(lm(y ~ x1 * x2, data=dat))
+```
+
+Or switch to an orthogonal basis using `contr.sum`, `contr.helmert` or `contr.poly` to use `car::Anova`. Note: `contr.SAS` is not orthogonal.
+
+```{r SS III example 2, engine='verbatim'}
+options(contrasts = c('contr.sum', 'contr.poly') )
+dat_lm2 <- lm(y ~ x1 * x2, data=dat)
+car::Anova(dat_lm2, type=3)
+```
+
+## Example: Alpine Data
+
+The alpine data have three factors: place (Cumb, Penn), species (grac, nive), site (Dry, Mid, Wet) with unequal unequal sample sizes, but no missing cells. We will analyze this as a three-way factorial. Credit to Dr. Philip Dixon for this data and example.
+
+```{r R read in alpine data}
+#| include: false
+alpine <- read.csv("data/alpine2.txt", sep="")
+```
+
+```{r SASmarkdown}
+#| include: false
+library(SASmarkdown) # for SAS within an R code chunk 
+# https://users.ssc.wisc.edu/~hemken/SASworkshops/Markdown/ch2.html#including-sas-code-in-your-document
+```
+
+```{sas SAS read in alpine data, collectcode=TRUE}
+#| include: false
+data alpine;
+  infile 'data/alpine2.txt' firstobs=2;
+  input place $ spp $ site $ lnwt;
+  run;
+
+/* only output the ANOVA table */
+ods select ModelANOVA; 
+```
+
+### Type I SS
+
+::: panel-tabset
+## R
+
+We calculate Type I using `anova` in base R,
+```{r R Type I SS}
+# create the linear model 
+alpine.lm <- lm(lnwt ~ place*site*spp, data=alpine)
+
+# type I (sequential) SS
+anova(alpine.lm)
+```
+
+## SAS
+Which matches SAS.
+
+```{sas SAS Type I SS}
+proc glm;
+  class place spp site;
+  model lnwt = place site spp place*site place*spp site*spp place*site*spp / ss1;
+run;
+```
+
+:::
+
+
+To demonstrate the idea of comparing null and alternative models instead of using the default ANOVA table, let's test if we need to include site in our model given that we are already including place. This hypothesis test corresponds site in the Type I SS ANOVA table above.
 
 ```{r}
-1 + 1
+null.lm <- lm(lnwt ~ place, data=alpine)
+alt.lm <- lm(lnwt ~ place + site, data=alpine)
+
+anova(alt.lm)
+
+anova(null.lm, alt.lm)
+```
+
+Again, the SS and MS for site match the ANOVA output, however the F statistic and p-value do not match because they are calculated from the MSE of the alternative model only containing place and site.
+
+```{r Type I checks}
+# anova 
+# mean sq / mse (of full model)
+0.2702 / 0.2672 # 1.01 F-stat
+
+# mean sq / mse (of alt model)
+0.2702 / 0.56093 # 0.4817 F-stat
+```
+
+Be careful!
+
+### Type II SS
+
+::: panel-tabset
+## R
+
+Next, we will do Type II SS in R using `car::Anova` with `type = 2`
+
+```{r R Type II}
+# type II (hierarchical) SS
+car::Anova(alpine.lm, type=2)
+```
+
+## SAS
+Which matches SAS
+
+```{sas SAS Type II SS}
+proc glm;
+  class place spp site;
+  model lnwt = place site spp place*site place*spp site*spp place*site*spp / ss2;
+run;
+```
+
+:::
+
+### Type III SS
+
+::: panel-tabset
+
+## R
+
+Now, the more complex Type III SS in R. We will show the results from   `emmeans::joint_tests`, which match SAS. We will also show `car::Anova` with and without an orthogonal basis.
+
+```{r Type III}
+# use emmeans::joint_tests
+emmeans::joint_tests(alpine.lm)
+
+# or switch to an orthogonal basis for car::Anova
+options(contrasts = c('contr.sum', 'contr.poly') )
+alpine2.lm <- lm(lnwt ~ place*site*spp, data=alpine)
+car::Anova(alpine2.lm, type=3)
+
+# otherwise, car::Anova does not match joint_tests or SAS
+car::Anova(alpine.lm, type=3)
+```
+
+The `joint_tests` and orthogonal `car::Anova` output matches SAS, however `car::Anova` on the original `alpine.lm` object differs.
+
+## SAS
+
+```{sas SAS Type III SS}
+proc glm;
+  class place spp site;
+  model lnwt = place site spp place*site place*spp site*spp place*site*spp / ss3;
+run;
+```
+
+:::
+
+Let us again look at the idea of comparing null and alternative models by testing for the three-way interaction given that we are including all other model terms. This hypothesis test corresponds to the three-way interaction in the Type III SS ANOVA table above.
+
+```{r null vs alt Type III}
+null.lm2 <- lm(lnwt ~ place + site + spp + 
+                 place:site + place:spp + site:spp,
+               , data=alpine)
+alt.lm2 <- lm(lnwt ~ place*site*spp, data=alpine)
+
+anova(null.lm2, alt.lm2)
+```
+
+This time, the F statistic and p-value match because the alternative model is the full model, as with all hypothesis tests associated with Type III SS.
+
+## Bonus Code
+
+### After ANOVA in R: emmeans with Alpine Data
+
+To quote Philip, "R doesn't make 'after the ANOVA' especially easy. The `emmeans` (successor to `lsmeans`) package implements a powerful set of after the ANOVA tools. Basic approach is to make a `emmeans` object for the factor of interest, then look at properties of that object.
+
+This example code includes calculating cell means, means within and averaging over place, contrast examples, and much more.
+
+```{r load emmeans}
+#| include: false
+library(emmeans)
+```
+
+```{r emmeans bonus}
+#| eval: false
+# analysis using emmeans (all three factors are of interest)
+alpine.emm <- emmeans(alpine.lm, c('spp','site','place'))
+
+# cell means with se, df and 95% CI
+alpine.emm
+
+# means within each place
+emmip(alpine.lm, spp ~ site | place)
+
+# cell means for site and spp averaging over place
+emmeans(alpine.lm, c('site','spp'))
+
+# F tests of site effects at each place and spp
+joint_tests(alpine.lm, by=c('place','spp'))
+
+# pairwise comparisons between all cells (not recommended!)
+emmeans(alpine.lm, pairwise ~ place:site:spp)
+
+# or between site and spp averaged over place
+emmeans(alpine.lm, pairwise ~ site:spp)
+
+# can specify same request as a set of factors and desired contrast(s)
+emmeans(alpine.lm, c('site','spp'), contr = 'pairwise')
+
+# sites for each spp averaging over place
+emmeans(alpine.lm, pairwise ~ site | spp)
+```
+
+`?'contrast-methods'` lists all the options for built-in contrasts
+
+Remember that you must know the order of the groups to properly specify the contrast. You can see the order of the group in many different ways including
+
+-   Look at the order of the groups in the emmeans() output.
+
+-   Print the emmeans object.
+
+-   Look at the sorted order of unique factor values: `sort(unique(factor))`
+
+```{r contrasts bonus}
+#| eval: false
+# let's focus on the sites 
+alpine.emm1 <- emmeans(alpine.lm, 'site')
+
+# all pairwise comparisons is easy
+site.pairs <- pairs(alpine.emm1) # Tukey adjustment by default
+
+# specifying summary( ) with adjust= allows you to choose the adjustment
+# from tukey, bonferroni, none, scheffe, sidak, dunnettx
+summary(site.pairs, adjust='none') 
+
+# and specifying summary( ) with infer=c(T, F) gives you CI's
+summary(site.pairs, infer=c(T,F))
+# first value for infer is confidence intervals, second is tests
+# so infer=c(F,F) just gives estimates, infer=c(T,T) gives both CI's and tests
+
+# or use confint() to which you can add adjust= to specify adjustments
+confint(site.pairs)
+
+# can specify desired contrasts either in a call to emmeans() or contrast()
+# notice you can provide multiple contrasts in one call, but you must always 
+# give a list even if you are only doing one contrast 
+contrast(alpine.emm1, list('D-MW'=c(1, -0.5, -0.5), 'M-W'=c(0, 1, -1)))
+
+alpine.emm2 <- emmeans(alpine.lm, c('site', 'spp') )
+alpine.c1 <- contrast(alpine.emm2, by='spp', 
+                      list('D-MW'=c(1, -0.5, -0.5), 
+                           'M-W'=c(0, 1, -1)))
+
+# can get CI's for the contrasts 
+summary(alpine.c1,infer=c(T,F), adjust='bonferroni')
+```
+
+### Broad vs Narrow Inference: Alpine Data Mixed Model
+
+Let's treat the alpine data as a repeated experiment with a single pooled place\*anything interaction, random effect. The places are random (not ideal because only 1 df), so inference is broad-sense to population of places.
+
+```{r broad vs narrow in R}
+#| eval: false
+
+library(lme4)
+alpine.lmm <- lmer(lnwt ~ site+spp+site:spp + (1|place) + (1|place:site:spp),
+  data=alpine)
+summary(alpine.lmm)  # mostly to see estimated variance components
+
+joint_tests(alpine.lmm)
+# uses Kenward-Rogers df adjustments, different implementation than SAS 
+# (slightly different when all variance components > 0, and quite different 
+# when one or more = 0). R seems to account for estimating the 0, SAS ignores the 0. 
+# to see the difference, remove the interaction variance from the model
+
+alpine2.lmm <- lmer(lnwt ~ site+spp+site:spp + (1|place),
+  data=alpine)
+summary(alpine2.lmm)  # mostly to see estimated variance components
+joint_tests(alpine2.lmm)
+
+# matches SAS with or without interaction variance
+```
+
+```{r broad vs narrow in SAS, engine='verbatim'}
+proc glimmix;
+  class place spp site;
+  model lnwt = site spp site*spp / ddfm = kr;
+  random place place*site*spp;
+  lsmeans site*spp;
+  title 'Repeated experiment analysis, Kenward-Roger df adjustment';
+run;
 ```

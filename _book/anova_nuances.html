@@ -214,8 +214,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sums-of-squares-refresher" id="toc-sums-of-squares-refresher" class="nav-link active" data-scroll-target="#sums-of-squares-refresher"><span class="header-section-number">3.1</span> Sums of Squares Refresher</a></li>
+  <li><a href="#changing-ss-types" id="toc-changing-ss-types" class="nav-link" data-scroll-target="#changing-ss-types"><span class="header-section-number">3.2</span> Changing SS Types</a>
+  <ul class="collapse">
+  <li><a href="#in-sas" id="toc-in-sas" class="nav-link" data-scroll-target="#in-sas"><span class="header-section-number">3.2.1</span> In SAS</a></li>
+  <li><a href="#in-r" id="toc-in-r" class="nav-link" data-scroll-target="#in-r"><span class="header-section-number">3.2.2</span> In R</a></li>
+  </ul></li>
+  <li><a href="#example-alpine-data" id="toc-example-alpine-data" class="nav-link" data-scroll-target="#example-alpine-data"><span class="header-section-number">3.3</span> Example: Alpine Data</a>
+  <ul class="collapse">
+  <li><a href="#type-i-ss" id="toc-type-i-ss" class="nav-link" data-scroll-target="#type-i-ss"><span class="header-section-number">3.3.1</span> Type I SS</a></li>
+  <li><a href="#type-ii-ss" id="toc-type-ii-ss" class="nav-link" data-scroll-target="#type-ii-ss"><span class="header-section-number">3.3.2</span> Type II SS</a></li>
+  <li><a href="#type-iii-ss" id="toc-type-iii-ss" class="nav-link" data-scroll-target="#type-iii-ss"><span class="header-section-number">3.3.3</span> Type III SS</a></li>
+  </ul></li>
+  <li><a href="#bonus-code" id="toc-bonus-code" class="nav-link" data-scroll-target="#bonus-code"><span class="header-section-number">3.4</span> Bonus Code</a>
+  <ul class="collapse">
+  <li><a href="#after-anova-in-r-emmeans-with-alpine-data" id="toc-after-anova-in-r-emmeans-with-alpine-data" class="nav-link" data-scroll-target="#after-anova-in-r-emmeans-with-alpine-data"><span class="header-section-number">3.4.1</span> After ANOVA in R: emmeans with Alpine Data</a></li>
+  <li><a href="#broad-vs-narrow-inference-alpine-data-mixed-model" id="toc-broad-vs-narrow-inference-alpine-data-mixed-model" class="nav-link" data-scroll-target="#broad-vs-narrow-inference-alpine-data-mixed-model"><span class="header-section-number">3.4.2</span> Broad vs Narrow Inference: Alpine Data Mixed Model</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
@@ -239,20 +261,599 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>In summary, this book has no content whatsoever.</p>
+<section id="sums-of-squares-refresher" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="sums-of-squares-refresher"><span class="header-section-number">3.1</span> Sums of Squares Refresher</h2>
+<p>The three common types of Sums of Squares (SS) are equivalent for balanced data: Type I, II, and III (I believe SAS is to blame for the unhelpful naming). These SS only differ when data is unbalanced.</p>
+<p>Sums of Squares can be thought of in many different ways, from calculating squared distances from the regression lines and group means to subtracting projection matrices with nested column spaces. We can consider the SS as <strong>sequential F-tests for a null or alternative model</strong> (from The Statistical Sleuth), where the scaled difference in SS (alternative - null) form the numerator in the F-test. This can also be thought of in a regression context with setting some coefficients to zero. Each of the three SS types have a particular style of F-tests, which are explained below.</p>
+<p>Notice that <strong>the F-test for the highest order interaction is the same for each SS type.</strong></p>
+<p><strong>Type I SS are sequential</strong>—the order of main effects matters! Notice that for effect A, it’s just the SS of A given the intercept, but for effect B it’s the SS of B given the intercept and A. Type I SS are the only SS that add to the total SS with unbalanced data; Type II and III SS do not add up to anything special with unbalanced data.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Null Model</th>
+<th>Alternative Model</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>1 (Intercept-only)</td>
+<td>A</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>A</td>
+<td>A + B</td>
+</tr>
+<tr class="odd">
+<td>AB</td>
+<td>A + B</td>
+<td>A + B + AB</td>
+</tr>
+</tbody>
+</table>
+<p>If we have the variables in a meaningful order, we may be interested in the whole sequence of tests formed by Type I SS.&nbsp;</p>
+<p><strong>Type II SS are hierarchical.</strong> This SS ignores interactions when testing for main effects (i.e.&nbsp;the interaction is excluded from both the null and alternative model). Type II SS are rarely used.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Null Model</th>
+<th>Alternative Model</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>B</td>
+<td>A + B</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>A</td>
+<td>A + B</td>
+</tr>
+<tr class="odd">
+<td>AB</td>
+<td>A + B</td>
+<td>A + B + AB</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Type III SS consider dropping one term at a time.</strong> Only Type III SS account for all other terms in the model. The corresponding ANOVA F-tests can be used to test for main effects and interactions.</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Null Model</th>
+<th>Alternative Model</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>B + AB</td>
+<td>A + B + AB</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>A + AB</td>
+<td>A + B + AB</td>
+</tr>
+<tr class="odd">
+<td>AB</td>
+<td>A + B</td>
+<td>A + B + AB</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Type IV SS are only relevant for factorial designs with missing cells</strong> (i.e.&nbsp;fractional factorials) and are equivalent to Type III when there are no missing cells.</p>
+<p><strong>Putting it all together</strong>, the below table is an alternative view of three SS types, taken from slide 60 of Dr.&nbsp;Dan Nettleton’s STAT 0510 lecture <a href="https://dnett.github.io/S510/08ANOVAunbalancedTwoFactor.pdf">8: Analysis of Variance for Unbalanced Two-Factor Experiments</a>. The model term(s) on the right being conditioned on form the null model, whereas the term on the left is being added to the null model to form the alternative model.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 11%">
+<col style="width: 29%">
+<col style="width: 29%">
+<col style="width: 29%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Source</th>
+<th>Type I</th>
+<th>Type II</th>
+<th>Type III</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>A</td>
+<td>SS (A | 1)</td>
+<td>SS (A | 1, B)</td>
+<td>SS (A | 1, B, AB)</td>
+</tr>
+<tr class="even">
+<td>B</td>
+<td>SS (B | 1, A)</td>
+<td>SS (B | 1, A)</td>
+<td>SS (B | 1, A, AB)</td>
+</tr>
+<tr class="odd">
+<td>AB</td>
+<td>SS (AB | 1, A, B)</td>
+<td>SS (AB | 1, A, B)</td>
+<td>SS (AB | 1, A, B)</td>
+</tr>
+</tbody>
+</table>
+<p>The following slide in Dr.&nbsp;Nettleton’s lecture has this table for 3 factors (see slide 61).</p>
+<p>Rather than using these default ANOVA tables, you can construct specific tests to address specific scientific questions. In R, this would look something like</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>anova(m1, m2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>where m1 is the null model and m2 is the alternative model.</p>
+<p>When you test a null vs alternative model this way in R, the F statistic and p-value will only match the ANOVA table if the alternative model is the full model containing every term. The SS and Means Squares (MS) will all be the same. Only Type III SS always specify the alternative model as the full model.</p>
+</section>
+<section id="changing-ss-types" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="changing-ss-types"><span class="header-section-number">3.2</span> Changing SS Types</h2>
+<section id="in-sas" class="level3" data-number="3.2.1">
+<h3 data-number="3.2.1" class="anchored" data-anchor-id="in-sas"><span class="header-section-number">3.2.1</span> In SAS</h3>
+<p>Specifying the SS type in SAS is very simple - you only need to specify <code>/ ss3</code> in the model statement for <code>proc glm</code> or <code>method = type3</code> in <code>proc mixed</code>. For example, for Type III</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>/* proc glm */</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>proc glm data=dat;</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    class x1 x2;</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    model y = x1 x2 x1*x2 / ss3;</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>run;</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>/* proc mixed */</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>proc mixed data=dat method = type3;</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    class x1 x2;</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    model y = x1 x2 x1*x2;</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>run;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="in-r" class="level3" data-number="3.2.2">
+<h3 data-number="3.2.2" class="anchored" data-anchor-id="in-r"><span class="header-section-number">3.2.2</span> In R</h3>
+<p>Specifying the SS type in R is tricky.</p>
+<p><code>anova</code> in base R calculates Type I SS. For example,</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dat_lm &lt;- lm(y ~ x1 * x2, data=dat)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>anova(dat_lm)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a># make sure treatment variables are factors!</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <code>car::Anova</code> function allows for Type II and III SS, however the so-called Type III SS does not match <code>emmeans::joint_tests</code> or SAS unless you switch to an orthogonal basis.</p>
+<p>For Type II,</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>car::Anova(dat_lm, type = 2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For Type III, use <code>emmeans::joint_tests</code></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>emmeans::joint_tests(lm(y ~ x1 * x2, data=dat))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Or switch to an orthogonal basis using <code>contr.sum</code>, <code>contr.helmert</code> or <code>contr.poly</code> to use <code>car::Anova</code>. Note: <code>contr.SAS</code> is not orthogonal.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>options(contrasts = c('contr.sum', 'contr.poly') )</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>dat_lm2 &lt;- lm(y ~ x1 * x2, data=dat)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>car::Anova(dat_lm2, type=3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="example-alpine-data" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="example-alpine-data"><span class="header-section-number">3.3</span> Example: Alpine Data</h2>
+<p>The alpine data have three factors: place (Cumb, Penn), species (grac, nive), site (Dry, Mid, Wet) with unequal unequal sample sizes, but no missing cells. We will analyze this as a three-way factorial. Credit to Dr.&nbsp;Philip Dixon for this data and example.</p>
+<section id="type-i-ss" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="type-i-ss"><span class="header-section-number">3.3.1</span> Type I SS</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">SAS</a></li></ul>
+<div class="tab-content">
+<div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
+<p>We calculate Type I using <code>anova</code> in base R,</p>
 <div class="cell">
 <details open="" class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># create the linear model </span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>alpine.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(lnwt <span class="sc">~</span> place<span class="sc">*</span>site<span class="sc">*</span>spp, <span class="at">data=</span>alpine)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># type I (sequential) SS</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(alpine.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 2</code></pre>
+<pre><code>Analysis of Variance Table
+
+Response: lnwt
+               Df  Sum Sq Mean Sq F value    Pr(&gt;F)    
+place           1  5.1939  5.1939 19.4377 2.688e-05 ***
+site            2  0.5404  0.2702  1.0111    0.3676    
+spp             1 15.9614 15.9614 59.7337 1.007e-11 ***
+place:site      2  0.4640  0.2320  0.8683    0.4229    
+place:spp       1  0.5362  0.5362  2.0066    0.1598    
+site:spp        2 15.8529  7.9264 29.6639 8.865e-11 ***
+place:site:spp  2  0.1563  0.0781  0.2925    0.7471    
+Residuals      97 25.9192  0.2672                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
+</div>
+<div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
+<p>Which matches SAS.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<pre class="sas cell-code"><code>proc glm;
+  class place spp site;
+  model lnwt = place site spp place*site place*spp site*spp place*site*spp / ss1;
+run;</code></pre>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                             The GLM Procedure
+ 
+                        Dependent Variable: lnwt   
+
+ Source                    DF     Type I SS   Mean Square  F Value  Pr &gt; F
+
+ place                      1    5.19393348    5.19393348    19.44  &lt;.0001
+ site                       2    0.54036876    0.27018438     1.01  0.3676
+ spp                        1   15.96135063   15.96135063    59.73  &lt;.0001
+ place*site                 2    0.46403991    0.23201996     0.87  0.4229
+ place*spp                  1    0.53616754    0.53616754     2.01  0.1598
+ spp*site                   2   15.85289774    7.92644887    29.66  &lt;.0001
+ place*spp*site             2    0.15629797    0.07814899     0.29  0.7471</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>To demonstrate the idea of comparing null and alternative models instead of using the default ANOVA table, let’s test if we need to include site in our model given that we are already including place. This hypothesis test corresponds site in the Type I SS ANOVA table above.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>null.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(lnwt <span class="sc">~</span> place, <span class="at">data=</span>alpine)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>alt.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(lnwt <span class="sc">~</span> place <span class="sc">+</span> site, <span class="at">data=</span>alpine)</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(alt.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Response: lnwt
+           Df Sum Sq Mean Sq F value   Pr(&gt;F)   
+place       1  5.194  5.1939  9.2607 0.002958 **
+site        2  0.540  0.2702  0.4817 0.619069   
+Residuals 105 58.890  0.5609                    
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(null.lm, alt.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: lnwt ~ place
+Model 2: lnwt ~ place + site
+  Res.Df   RSS Df Sum of Sq      F Pr(&gt;F)
+1    107 59.43                           
+2    105 58.89  2   0.54037 0.4817 0.6191</code></pre>
+</div>
+</div>
+<p>Again, the SS and MS for site match the ANOVA output, however the F statistic and p-value do not match because they are calculated from the MSE of the alternative model only containing place and site.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># anova </span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># mean sq / mse (of full model)</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fl">0.2702</span> <span class="sc">/</span> <span class="fl">0.2672</span> <span class="co"># 1.01 F-stat</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1.011228</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># mean sq / mse (of alt model)</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fl">0.2702</span> <span class="sc">/</span> <span class="fl">0.56093</span> <span class="co"># 0.4817 F-stat</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.4817</code></pre>
+</div>
+</div>
+<p>Be careful!</p>
+</section>
+<section id="type-ii-ss" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="type-ii-ss"><span class="header-section-number">3.3.2</span> Type II SS</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">SAS</a></li></ul>
+<div class="tab-content">
+<div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
+<p>Next, we will do Type II SS in R using <code>car::Anova</code> with <code>type = 2</code></p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># type II (hierarchical) SS</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(alpine.lm, <span class="at">type=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Anova Table (Type II tests)
+
+Response: lnwt
+                Sum Sq Df F value    Pr(&gt;F)    
+place           3.0097  1 11.2635   0.00113 ** 
+site            0.9711  2  1.8172   0.16797    
+spp            16.2202  1 60.7025 7.435e-12 ***
+place:site      0.2484  2  0.4647   0.62970    
+place:spp       0.1497  1  0.5603   0.45594    
+site:spp       15.8529  2 29.6639 8.865e-11 ***
+place:site:spp  0.1563  2  0.2925   0.74708    
+Residuals      25.9192 97                      
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+</div>
+<div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
+<p>Which matches SAS</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<pre class="sas cell-code"><code>proc glm;
+  class place spp site;
+  model lnwt = place site spp place*site place*spp site*spp place*site*spp / ss2;
+run;</code></pre>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                             The GLM Procedure
+ 
+                        Dependent Variable: lnwt   
+
+ Source                    DF    Type II SS   Mean Square  F Value  Pr &gt; F
+
+ place                      1    3.00971222    3.00971222    11.26  0.0011
+ site                       2    0.97112780    0.48556390     1.82  0.1680
+ spp                        1   16.22022467   16.22022467    60.70  &lt;.0001
+ place*site                 2    0.24835684    0.12417842     0.46  0.6297
+ place*spp                  1    0.14972544    0.14972544     0.56  0.4559
+ spp*site                   2   15.85289774    7.92644887    29.66  &lt;.0001
+ place*spp*site             2    0.15629797    0.07814899     0.29  0.7471</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="type-iii-ss" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="type-iii-ss"><span class="header-section-number">3.3.3</span> Type III SS</h3>
+<div class="tabset-margin-container"></div><div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">SAS</a></li></ul>
+<div class="tab-content">
+<div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
+<p>Now, the more complex Type III SS in R. We will show the results from <code>emmeans::joint_tests</code>, which match SAS. We will also show <code>car::Anova</code> with and without an orthogonal basis.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># use emmeans::joint_tests</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>emmeans<span class="sc">::</span><span class="fu">joint_tests</span>(alpine.lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code> model term     df1 df2 F.ratio p.value
+ place            1  97  10.959  0.0013
+ site             2  97   0.740  0.4796
+ spp              1  97  58.084  &lt;.0001
+ place:site       2  97   0.393  0.6763
+ place:spp        1  97   0.561  0.4559
+ site:spp         2  97  29.741  &lt;.0001
+ place:site:spp   2  97   0.292  0.7471</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># or switch to an orthogonal basis for car::Anova</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">contrasts =</span> <span class="fu">c</span>(<span class="st">'contr.sum'</span>, <span class="st">'contr.poly'</span>) )</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>alpine2.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(lnwt <span class="sc">~</span> place<span class="sc">*</span>site<span class="sc">*</span>spp, <span class="at">data=</span>alpine)</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(alpine2.lm, <span class="at">type=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Anova Table (Type III tests)
+
+Response: lnwt
+                Sum Sq Df   F value    Pr(&gt;F)    
+(Intercept)    1723.11  1 6448.5415 &lt; 2.2e-16 ***
+place             2.93  1   10.9592  0.001309 ** 
+site              0.40  2    0.7403  0.479627    
+spp              15.52  1   58.0841 1.697e-11 ***
+place:site        0.21  2    0.3927  0.676296    
+place:spp         0.15  1    0.5605  0.455864    
+site:spp         15.89  2   29.7405 8.453e-11 ***
+place:site:spp    0.16  2    0.2925  0.747078    
+Residuals        25.92 97                        
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># otherwise, car::Anova does not match joint_tests or SAS</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>car<span class="sc">::</span><span class="fu">Anova</span>(alpine.lm, <span class="at">type=</span><span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Anova Table (Type III tests)
+
+Response: lnwt
+                Sum Sq Df  F value    Pr(&gt;F)    
+(Intercept)    141.978  1 531.3386 &lt; 2.2e-16 ***
+place            0.645  1   2.4151  0.123428    
+site             3.808  2   7.1256  0.001296 ** 
+spp              0.392  1   1.4670  0.228759    
+place:site       0.005  2   0.0098  0.990255    
+place:spp        0.001  1   0.0043  0.947784    
+site:spp         7.460  2  13.9598 4.697e-06 ***
+place:site:spp   0.156  2   0.2925  0.747078    
+Residuals       25.919 97                       
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
+</div>
+</div>
+<p>The <code>joint_tests</code> and orthogonal <code>car::Anova</code> output matches SAS, however <code>car::Anova</code> on the original <code>alpine.lm</code> object differs.</p>
+</div>
+<div id="tabset-3-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-3-2-tab">
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<pre class="sas cell-code"><code>proc glm;
+  class place spp site;
+  model lnwt = place site spp place*site place*spp site*spp place*site*spp / ss3;
+run;</code></pre>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>                             The GLM Procedure
+ 
+                        Dependent Variable: lnwt   
+
+ Source                    DF   Type III SS   Mean Square  F Value  Pr &gt; F
+
+ place                      1    2.92839766    2.92839766    10.96  0.0013
+ site                       2    0.39565116    0.19782558     0.74  0.4796
+ spp                        1   15.52056508   15.52056508    58.08  &lt;.0001
+ place*site                 2    0.20986856    0.10493428     0.39  0.6763
+ place*spp                  1    0.14977498    0.14977498     0.56  0.4559
+ spp*site                   2   15.89385223    7.94692612    29.74  &lt;.0001
+ place*spp*site             2    0.15629797    0.07814899     0.29  0.7471</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Let us again look at the idea of comparing null and alternative models by testing for the three-way interaction given that we are including all other model terms. This hypothesis test corresponds to the three-way interaction in the Type III SS ANOVA table above.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>null.lm2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(lnwt <span class="sc">~</span> place <span class="sc">+</span> site <span class="sc">+</span> spp <span class="sc">+</span> </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                 place<span class="sc">:</span>site <span class="sc">+</span> place<span class="sc">:</span>spp <span class="sc">+</span> site<span class="sc">:</span>spp,</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>               , <span class="at">data=</span>alpine)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>alt.lm2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(lnwt <span class="sc">~</span> place<span class="sc">*</span>site<span class="sc">*</span>spp, <span class="at">data=</span>alpine)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(null.lm2, alt.lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>Analysis of Variance Table
+
+Model 1: lnwt ~ place + site + spp + place:site + place:spp + site:spp
+Model 2: lnwt ~ place * site * spp
+  Res.Df    RSS Df Sum of Sq      F Pr(&gt;F)
+1     99 26.076                           
+2     97 25.919  2    0.1563 0.2925 0.7471</code></pre>
+</div>
+</div>
+<p>This time, the F statistic and p-value match because the alternative model is the full model, as with all hypothesis tests associated with Type III SS.</p>
+</section>
+</section>
+<section id="bonus-code" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="bonus-code"><span class="header-section-number">3.4</span> Bonus Code</h2>
+<section id="after-anova-in-r-emmeans-with-alpine-data" class="level3" data-number="3.4.1">
+<h3 data-number="3.4.1" class="anchored" data-anchor-id="after-anova-in-r-emmeans-with-alpine-data"><span class="header-section-number">3.4.1</span> After ANOVA in R: emmeans with Alpine Data</h3>
+<p>To quote Philip, “R doesn’t make ‘after the ANOVA’ especially easy. The <code>emmeans</code> (successor to <code>lsmeans</code>) package implements a powerful set of after the ANOVA tools. Basic approach is to make a <code>emmeans</code> object for the factor of interest, then look at properties of that object.</p>
+<p>This example code includes calculating cell means, means within and averaging over place, contrast examples, and much more.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># analysis using emmeans (all three factors are of interest)</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>alpine.emm <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(alpine.lm, <span class="fu">c</span>(<span class="st">'spp'</span>,<span class="st">'site'</span>,<span class="st">'place'</span>))</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a><span class="co"># cell means with se, df and 95% CI</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>alpine.emm</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a><span class="co"># means within each place</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="fu">emmip</span>(alpine.lm, spp <span class="sc">~</span> site <span class="sc">|</span> place)</span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a><span class="co"># cell means for site and spp averaging over place</span></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(alpine.lm, <span class="fu">c</span>(<span class="st">'site'</span>,<span class="st">'spp'</span>))</span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a><span class="co"># F tests of site effects at each place and spp</span></span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a><span class="fu">joint_tests</span>(alpine.lm, <span class="at">by=</span><span class="fu">c</span>(<span class="st">'place'</span>,<span class="st">'spp'</span>))</span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a><span class="co"># pairwise comparisons between all cells (not recommended!)</span></span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(alpine.lm, pairwise <span class="sc">~</span> place<span class="sc">:</span>site<span class="sc">:</span>spp)</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a><span class="co"># or between site and spp averaged over place</span></span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(alpine.lm, pairwise <span class="sc">~</span> site<span class="sc">:</span>spp)</span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a><span class="co"># can specify same request as a set of factors and desired contrast(s)</span></span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(alpine.lm, <span class="fu">c</span>(<span class="st">'site'</span>,<span class="st">'spp'</span>), <span class="at">contr =</span> <span class="st">'pairwise'</span>)</span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a><span class="co"># sites for each spp averaging over place</span></span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a><span class="fu">emmeans</span>(alpine.lm, pairwise <span class="sc">~</span> site <span class="sc">|</span> spp)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p><code>?'contrast-methods'</code> lists all the options for built-in contrasts</p>
+<p>Remember that you must know the order of the groups to properly specify the contrast. You can see the order of the group in many different ways including</p>
+<ul>
+<li><p>Look at the order of the groups in the emmeans() output.</p></li>
+<li><p>Print the emmeans object.</p></li>
+<li><p>Look at the sorted order of unique factor values: <code>sort(unique(factor))</code></p></li>
+</ul>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># let's focus on the sites </span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>alpine.emm1 <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(alpine.lm, <span class="st">'site'</span>)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a><span class="co"># all pairwise comparisons is easy</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>site.pairs <span class="ot">&lt;-</span> <span class="fu">pairs</span>(alpine.emm1) <span class="co"># Tukey adjustment by default</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a><span class="co"># specifying summary( ) with adjust= allows you to choose the adjustment</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a><span class="co"># from tukey, bonferroni, none, scheffe, sidak, dunnettx</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(site.pairs, <span class="at">adjust=</span><span class="st">'none'</span>) </span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a><span class="co"># and specifying summary( ) with infer=c(T, F) gives you CI's</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(site.pairs, <span class="at">infer=</span><span class="fu">c</span>(T,F))</span>
+<span id="cb34-13"><a href="#cb34-13" aria-hidden="true" tabindex="-1"></a><span class="co"># first value for infer is confidence intervals, second is tests</span></span>
+<span id="cb34-14"><a href="#cb34-14" aria-hidden="true" tabindex="-1"></a><span class="co"># so infer=c(F,F) just gives estimates, infer=c(T,T) gives both CI's and tests</span></span>
+<span id="cb34-15"><a href="#cb34-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-16"><a href="#cb34-16" aria-hidden="true" tabindex="-1"></a><span class="co"># or use confint() to which you can add adjust= to specify adjustments</span></span>
+<span id="cb34-17"><a href="#cb34-17" aria-hidden="true" tabindex="-1"></a><span class="fu">confint</span>(site.pairs)</span>
+<span id="cb34-18"><a href="#cb34-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-19"><a href="#cb34-19" aria-hidden="true" tabindex="-1"></a><span class="co"># can specify desired contrasts either in a call to emmeans() or contrast()</span></span>
+<span id="cb34-20"><a href="#cb34-20" aria-hidden="true" tabindex="-1"></a><span class="co"># notice you can provide multiple contrasts in one call, but you must always </span></span>
+<span id="cb34-21"><a href="#cb34-21" aria-hidden="true" tabindex="-1"></a><span class="co"># give a list even if you are only doing one contrast </span></span>
+<span id="cb34-22"><a href="#cb34-22" aria-hidden="true" tabindex="-1"></a><span class="fu">contrast</span>(alpine.emm1, <span class="fu">list</span>(<span class="st">'D-MW'</span><span class="ot">=</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="fl">0.5</span>, <span class="sc">-</span><span class="fl">0.5</span>), <span class="st">'M-W'</span><span class="ot">=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>)))</span>
+<span id="cb34-23"><a href="#cb34-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-24"><a href="#cb34-24" aria-hidden="true" tabindex="-1"></a>alpine.emm2 <span class="ot">&lt;-</span> <span class="fu">emmeans</span>(alpine.lm, <span class="fu">c</span>(<span class="st">'site'</span>, <span class="st">'spp'</span>) )</span>
+<span id="cb34-25"><a href="#cb34-25" aria-hidden="true" tabindex="-1"></a>alpine.c1 <span class="ot">&lt;-</span> <span class="fu">contrast</span>(alpine.emm2, <span class="at">by=</span><span class="st">'spp'</span>, </span>
+<span id="cb34-26"><a href="#cb34-26" aria-hidden="true" tabindex="-1"></a>                      <span class="fu">list</span>(<span class="st">'D-MW'</span><span class="ot">=</span><span class="fu">c</span>(<span class="dv">1</span>, <span class="sc">-</span><span class="fl">0.5</span>, <span class="sc">-</span><span class="fl">0.5</span>), </span>
+<span id="cb34-27"><a href="#cb34-27" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'M-W'</span><span class="ot">=</span><span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="sc">-</span><span class="dv">1</span>)))</span>
+<span id="cb34-28"><a href="#cb34-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-29"><a href="#cb34-29" aria-hidden="true" tabindex="-1"></a><span class="co"># can get CI's for the contrasts </span></span>
+<span id="cb34-30"><a href="#cb34-30" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(alpine.c1,<span class="at">infer=</span><span class="fu">c</span>(T,F), <span class="at">adjust=</span><span class="st">'bonferroni'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+</section>
+<section id="broad-vs-narrow-inference-alpine-data-mixed-model" class="level3" data-number="3.4.2">
+<h3 data-number="3.4.2" class="anchored" data-anchor-id="broad-vs-narrow-inference-alpine-data-mixed-model"><span class="header-section-number">3.4.2</span> Broad vs Narrow Inference: Alpine Data Mixed Model</h3>
+<p>Let’s treat the alpine data as a repeated experiment with a single pooled place*anything interaction, random effect. The places are random (not ideal because only 1 df), so inference is broad-sense to population of places.</p>
+<div class="cell">
+<details open="" class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>alpine.lmm <span class="ot">&lt;-</span> <span class="fu">lmer</span>(lnwt <span class="sc">~</span> site<span class="sc">+</span>spp<span class="sc">+</span>site<span class="sc">:</span>spp <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>place) <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>place<span class="sc">:</span>site<span class="sc">:</span>spp),</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data=</span>alpine)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(alpine.lmm)  <span class="co"># mostly to see estimated variance components</span></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="fu">joint_tests</span>(alpine.lmm)</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="co"># uses Kenward-Rogers df adjustments, different implementation than SAS </span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="co"># (slightly different when all variance components &gt; 0, and quite different </span></span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a><span class="co"># when one or more = 0). R seems to account for estimating the 0, SAS ignores the 0. </span></span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="co"># to see the difference, remove the interaction variance from the model</span></span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a>alpine2.lmm <span class="ot">&lt;-</span> <span class="fu">lmer</span>(lnwt <span class="sc">~</span> site<span class="sc">+</span>spp<span class="sc">+</span>site<span class="sc">:</span>spp <span class="sc">+</span> (<span class="dv">1</span><span class="sc">|</span>place),</span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">data=</span>alpine)</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(alpine2.lmm)  <span class="co"># mostly to see estimated variance components</span></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a><span class="fu">joint_tests</span>(alpine2.lmm)</span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a><span class="co"># matches SAS with or without interaction variance</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="sourceCode" id="cb36"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>proc glimmix;</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  class place spp site;</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  model lnwt = site spp site*spp / ddfm = kr;</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  random place place*site*spp;</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  lsmeans site*spp;</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  title 'Repeated experiment analysis, Kenward-Roger df adjustment';</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>run;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 
 <!-- -->
 
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
@@ -735,13 +1336,390 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">
-<div class="sourceCode" id="cb3" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># ANOVA Nuances</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>In summary, this book has no content whatsoever.</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">+</span> <span class="dv">1</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<div class="sourceCode" id="cb37" data-shortcodes="false"><pre class="sourceCode markdown code-with-copy"><code class="sourceCode markdown"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu"># ANOVA Nuances</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="fu">## Sums of Squares Refresher</span></span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>The three common types of Sums of Squares (SS) are equivalent for balanced data: Type I, II, and III (I believe SAS is to blame for the unhelpful naming). These SS only differ when data is unbalanced.</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>Sums of Squares can be thought of in many different ways, from calculating squared distances from the regression lines and group means to subtracting projection matrices with nested column spaces. We can consider the SS as **sequential F-tests for a null or alternative model** (from The Statistical Sleuth), where the scaled difference in SS (alternative - null) form the numerator in the F-test. This can also be thought of in a regression context with setting some coefficients to zero. Each of the three SS types have a particular style of F-tests, which are explained below.</span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>Notice that **the F-test for the highest order interaction is the same for each SS type.**</span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>**Type I SS are sequential**—the order of main effects matters! Notice that for effect A, it's just the SS of A given the intercept, but for effect B it's the SS of B given the intercept and A. Type I SS are the only SS that add to the total SS with unbalanced data; Type II and III SS do not add up to anything special with unbalanced data.</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a>| Variable | Null Model         | Alternative Model |</span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>|----------|--------------------|-------------------|</span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>| A        | 1 (Intercept-only) | A                 |</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a>| B        | A                  | A + B             |</span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a>| AB       | A + B              | A + B + AB        |</span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a>If we have the variables in a meaningful order, we may be interested in the whole sequence of tests formed by Type I SS.&nbsp;</span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a>**Type II SS are hierarchical.** This SS ignores interactions when testing for main effects (i.e. the interaction is excluded from both the null and alternative model). Type II SS are rarely used.</span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a>| Variable | Null Model | Alternative Model |</span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a>|----------|------------|-------------------|</span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a>| A        | B          | A + B             |</span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a>| B        | A          | A + B             |</span>
+<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a>| AB       | A + B      | A + B + AB        |</span>
+<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a>**Type III SS consider dropping one term at a time.** Only Type III SS account for all other terms in the model. The corresponding ANOVA F-tests can be used to test for main effects and interactions.</span>
+<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a>| Variable | Null Model | Alternative Model |</span>
+<span id="cb37-32"><a href="#cb37-32" aria-hidden="true" tabindex="-1"></a>|----------|------------|-------------------|</span>
+<span id="cb37-33"><a href="#cb37-33" aria-hidden="true" tabindex="-1"></a>| A        | B + AB     | A + B + AB        |</span>
+<span id="cb37-34"><a href="#cb37-34" aria-hidden="true" tabindex="-1"></a>| B        | A + AB     | A + B + AB        |</span>
+<span id="cb37-35"><a href="#cb37-35" aria-hidden="true" tabindex="-1"></a>| AB       | A + B      | A + B + AB        |</span>
+<span id="cb37-36"><a href="#cb37-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-37"><a href="#cb37-37" aria-hidden="true" tabindex="-1"></a>**Type IV SS are only relevant for factorial designs with missing cells** (i.e. fractional factorials) and are equivalent to Type III when there are no missing cells.</span>
+<span id="cb37-38"><a href="#cb37-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-39"><a href="#cb37-39" aria-hidden="true" tabindex="-1"></a>**Putting it all together**, the below table is an alternative view of three SS types, taken from slide 60 of Dr. Dan Nettleton's STAT 0510 lecture <span class="co">[</span><span class="ot">8: Analysis of Variance for Unbalanced Two-Factor Experiments</span><span class="co">](https://dnett.github.io/S510/08ANOVAunbalancedTwoFactor.pdf)</span>. The model term(s) on the right being conditioned on form the null model, whereas the term on the left is being added to the null model to form the alternative model.</span>
+<span id="cb37-40"><a href="#cb37-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-41"><a href="#cb37-41" aria-hidden="true" tabindex="-1"></a>| Source | Type I             | Type II            | Type III           |</span>
+<span id="cb37-42"><a href="#cb37-42" aria-hidden="true" tabindex="-1"></a>|--------|--------------------|--------------------|--------------------|</span>
+<span id="cb37-43"><a href="#cb37-43" aria-hidden="true" tabindex="-1"></a>| A      | SS (A \| 1)        | SS (A \| 1, B)     | SS (A \| 1, B, AB) |</span>
+<span id="cb37-44"><a href="#cb37-44" aria-hidden="true" tabindex="-1"></a>| B      | SS (B \| 1, A)     | SS (B \| 1, A)     | SS (B \| 1, A, AB) |</span>
+<span id="cb37-45"><a href="#cb37-45" aria-hidden="true" tabindex="-1"></a>| AB     | SS (AB \| 1, A, B) | SS (AB \| 1, A, B) | SS (AB \| 1, A, B) |</span>
+<span id="cb37-46"><a href="#cb37-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-47"><a href="#cb37-47" aria-hidden="true" tabindex="-1"></a>The following slide in Dr. Nettleton's lecture has this table for 3 factors (see slide 61).</span>
+<span id="cb37-48"><a href="#cb37-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-49"><a href="#cb37-49" aria-hidden="true" tabindex="-1"></a>Rather than using these default ANOVA tables, you can construct specific tests to address specific scientific questions. In R, this would look something like</span>
+<span id="cb37-50"><a href="#cb37-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-51"><a href="#cb37-51" aria-hidden="true" tabindex="-1"></a><span class="in">```{r m1 vs m2, engine='verbatim'}</span></span>
+<span id="cb37-52"><a href="#cb37-52" aria-hidden="true" tabindex="-1"></a><span class="in">anova(m1, m2)</span></span>
+<span id="cb37-53"><a href="#cb37-53" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-54"><a href="#cb37-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-55"><a href="#cb37-55" aria-hidden="true" tabindex="-1"></a>where m1 is the null model and m2 is the alternative model.</span>
+<span id="cb37-56"><a href="#cb37-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-57"><a href="#cb37-57" aria-hidden="true" tabindex="-1"></a>When you test a null vs alternative model this way in R, the F statistic and p-value will only match the ANOVA table if the alternative model is the full model containing every term. The SS and Means Squares (MS) will all be the same. Only Type III SS always specify the alternative model as the full model.</span>
+<span id="cb37-58"><a href="#cb37-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-59"><a href="#cb37-59" aria-hidden="true" tabindex="-1"></a><span class="fu">## Changing SS Types</span></span>
+<span id="cb37-60"><a href="#cb37-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-61"><a href="#cb37-61" aria-hidden="true" tabindex="-1"></a><span class="fu">### In SAS</span></span>
+<span id="cb37-62"><a href="#cb37-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-63"><a href="#cb37-63" aria-hidden="true" tabindex="-1"></a>Specifying the SS type in SAS is very simple - you only need to specify <span class="in">`/ ss3`</span> in the model statement for <span class="in">`proc glm`</span> or <span class="in">`method = type3`</span> in  <span class="in">`proc mixed`</span>. For example, for Type III</span>
+<span id="cb37-64"><a href="#cb37-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-65"><a href="#cb37-65" aria-hidden="true" tabindex="-1"></a><span class="in">```{r SAS Type III, engine='verbatim'}</span></span>
+<span id="cb37-66"><a href="#cb37-66" aria-hidden="true" tabindex="-1"></a><span class="in">/* proc glm */</span></span>
+<span id="cb37-67"><a href="#cb37-67" aria-hidden="true" tabindex="-1"></a><span class="in">proc glm data=dat;</span></span>
+<span id="cb37-68"><a href="#cb37-68" aria-hidden="true" tabindex="-1"></a><span class="in">    class x1 x2;</span></span>
+<span id="cb37-69"><a href="#cb37-69" aria-hidden="true" tabindex="-1"></a><span class="in">    model y = x1 x2 x1*x2 / ss3;</span></span>
+<span id="cb37-70"><a href="#cb37-70" aria-hidden="true" tabindex="-1"></a><span class="in">run;</span></span>
+<span id="cb37-71"><a href="#cb37-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-72"><a href="#cb37-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-73"><a href="#cb37-73" aria-hidden="true" tabindex="-1"></a><span class="in">/* proc mixed */</span></span>
+<span id="cb37-74"><a href="#cb37-74" aria-hidden="true" tabindex="-1"></a><span class="in">proc mixed data=dat method = type3;</span></span>
+<span id="cb37-75"><a href="#cb37-75" aria-hidden="true" tabindex="-1"></a><span class="in">    class x1 x2;</span></span>
+<span id="cb37-76"><a href="#cb37-76" aria-hidden="true" tabindex="-1"></a><span class="in">    model y = x1 x2 x1*x2;</span></span>
+<span id="cb37-77"><a href="#cb37-77" aria-hidden="true" tabindex="-1"></a><span class="in">run;</span></span>
+<span id="cb37-78"><a href="#cb37-78" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-79"><a href="#cb37-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-80"><a href="#cb37-80" aria-hidden="true" tabindex="-1"></a><span class="fu">### In R</span></span>
+<span id="cb37-81"><a href="#cb37-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-82"><a href="#cb37-82" aria-hidden="true" tabindex="-1"></a>Specifying the SS type in R is tricky.</span>
+<span id="cb37-83"><a href="#cb37-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-84"><a href="#cb37-84" aria-hidden="true" tabindex="-1"></a><span class="in">`anova`</span> in base R calculates Type I SS. For example,</span>
+<span id="cb37-85"><a href="#cb37-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-86"><a href="#cb37-86" aria-hidden="true" tabindex="-1"></a><span class="in">```{r SS I example, engine='verbatim'}</span></span>
+<span id="cb37-87"><a href="#cb37-87" aria-hidden="true" tabindex="-1"></a><span class="in">dat_lm &lt;- lm(y ~ x1 * x2, data=dat)</span></span>
+<span id="cb37-88"><a href="#cb37-88" aria-hidden="true" tabindex="-1"></a><span class="in">anova(dat_lm)</span></span>
+<span id="cb37-89"><a href="#cb37-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-90"><a href="#cb37-90" aria-hidden="true" tabindex="-1"></a><span class="in"># make sure treatment variables are factors!</span></span>
+<span id="cb37-91"><a href="#cb37-91" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-92"><a href="#cb37-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-93"><a href="#cb37-93" aria-hidden="true" tabindex="-1"></a>The <span class="in">`car::Anova`</span> function allows for Type II and III SS, however the so-called Type III SS does not match <span class="in">`emmeans::joint_tests`</span> or SAS unless you switch to an orthogonal basis.</span>
+<span id="cb37-94"><a href="#cb37-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-95"><a href="#cb37-95" aria-hidden="true" tabindex="-1"></a>For Type II,</span>
+<span id="cb37-96"><a href="#cb37-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-97"><a href="#cb37-97" aria-hidden="true" tabindex="-1"></a><span class="in">```{r SS II example, engine='verbatim'}</span></span>
+<span id="cb37-98"><a href="#cb37-98" aria-hidden="true" tabindex="-1"></a><span class="in">car::Anova(dat_lm, type = 2)</span></span>
+<span id="cb37-99"><a href="#cb37-99" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-100"><a href="#cb37-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-101"><a href="#cb37-101" aria-hidden="true" tabindex="-1"></a>For Type III, use <span class="in">`emmeans::joint_tests`</span></span>
+<span id="cb37-102"><a href="#cb37-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-103"><a href="#cb37-103" aria-hidden="true" tabindex="-1"></a><span class="in">```{r SS III example, engine='verbatim'}</span></span>
+<span id="cb37-104"><a href="#cb37-104" aria-hidden="true" tabindex="-1"></a><span class="in">emmeans::joint_tests(lm(y ~ x1 * x2, data=dat))</span></span>
+<span id="cb37-105"><a href="#cb37-105" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-106"><a href="#cb37-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-107"><a href="#cb37-107" aria-hidden="true" tabindex="-1"></a>Or switch to an orthogonal basis using <span class="in">`contr.sum`</span>, <span class="in">`contr.helmert`</span> or <span class="in">`contr.poly`</span> to use <span class="in">`car::Anova`</span>. Note: <span class="in">`contr.SAS`</span> is not orthogonal.</span>
+<span id="cb37-108"><a href="#cb37-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-109"><a href="#cb37-109" aria-hidden="true" tabindex="-1"></a><span class="in">```{r SS III example 2, engine='verbatim'}</span></span>
+<span id="cb37-110"><a href="#cb37-110" aria-hidden="true" tabindex="-1"></a><span class="in">options(contrasts = c('contr.sum', 'contr.poly') )</span></span>
+<span id="cb37-111"><a href="#cb37-111" aria-hidden="true" tabindex="-1"></a><span class="in">dat_lm2 &lt;- lm(y ~ x1 * x2, data=dat)</span></span>
+<span id="cb37-112"><a href="#cb37-112" aria-hidden="true" tabindex="-1"></a><span class="in">car::Anova(dat_lm2, type=3)</span></span>
+<span id="cb37-113"><a href="#cb37-113" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-114"><a href="#cb37-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-115"><a href="#cb37-115" aria-hidden="true" tabindex="-1"></a><span class="fu">## Example: Alpine Data</span></span>
+<span id="cb37-116"><a href="#cb37-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-117"><a href="#cb37-117" aria-hidden="true" tabindex="-1"></a>The alpine data have three factors: place (Cumb, Penn), species (grac, nive), site (Dry, Mid, Wet) with unequal unequal sample sizes, but no missing cells. We will analyze this as a three-way factorial. Credit to Dr. Philip Dixon for this data and example.</span>
+<span id="cb37-118"><a href="#cb37-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-119"><a href="#cb37-119" aria-hidden="true" tabindex="-1"></a><span class="in">```{r R read in alpine data}</span></span>
+<span id="cb37-120"><a href="#cb37-120" aria-hidden="true" tabindex="-1"></a><span class="in">#| include: false</span></span>
+<span id="cb37-121"><a href="#cb37-121" aria-hidden="true" tabindex="-1"></a><span class="in">alpine &lt;- read.csv("data/alpine2.txt", sep="")</span></span>
+<span id="cb37-122"><a href="#cb37-122" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-123"><a href="#cb37-123" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-124"><a href="#cb37-124" aria-hidden="true" tabindex="-1"></a><span class="in">```{r SASmarkdown}</span></span>
+<span id="cb37-125"><a href="#cb37-125" aria-hidden="true" tabindex="-1"></a><span class="in">#| include: false</span></span>
+<span id="cb37-126"><a href="#cb37-126" aria-hidden="true" tabindex="-1"></a><span class="in">library(SASmarkdown) # for SAS within an R code chunk </span></span>
+<span id="cb37-127"><a href="#cb37-127" aria-hidden="true" tabindex="-1"></a><span class="in"># https://users.ssc.wisc.edu/~hemken/SASworkshops/Markdown/ch2.html#including-sas-code-in-your-document</span></span>
+<span id="cb37-128"><a href="#cb37-128" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-129"><a href="#cb37-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-130"><a href="#cb37-130" aria-hidden="true" tabindex="-1"></a><span class="in">```{sas SAS read in alpine data, collectcode=TRUE}</span></span>
+<span id="cb37-131"><a href="#cb37-131" aria-hidden="true" tabindex="-1"></a><span class="in">#| include: false</span></span>
+<span id="cb37-132"><a href="#cb37-132" aria-hidden="true" tabindex="-1"></a><span class="in">data alpine;</span></span>
+<span id="cb37-133"><a href="#cb37-133" aria-hidden="true" tabindex="-1"></a><span class="in">  infile 'data/alpine2.txt' firstobs=2;</span></span>
+<span id="cb37-134"><a href="#cb37-134" aria-hidden="true" tabindex="-1"></a><span class="in">  input place $ spp $ site $ lnwt;</span></span>
+<span id="cb37-135"><a href="#cb37-135" aria-hidden="true" tabindex="-1"></a><span class="in">  run;</span></span>
+<span id="cb37-136"><a href="#cb37-136" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-137"><a href="#cb37-137" aria-hidden="true" tabindex="-1"></a><span class="in">/* only output the ANOVA table */</span></span>
+<span id="cb37-138"><a href="#cb37-138" aria-hidden="true" tabindex="-1"></a><span class="in">ods select ModelANOVA; </span></span>
+<span id="cb37-139"><a href="#cb37-139" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-140"><a href="#cb37-140" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-141"><a href="#cb37-141" aria-hidden="true" tabindex="-1"></a><span class="fu">### Type I SS</span></span>
+<span id="cb37-142"><a href="#cb37-142" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-143"><a href="#cb37-143" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb37-144"><a href="#cb37-144" aria-hidden="true" tabindex="-1"></a><span class="fu">## R</span></span>
+<span id="cb37-145"><a href="#cb37-145" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-146"><a href="#cb37-146" aria-hidden="true" tabindex="-1"></a>We calculate Type I using <span class="in">`anova`</span> in base R,</span>
+<span id="cb37-147"><a href="#cb37-147" aria-hidden="true" tabindex="-1"></a><span class="in">```{r R Type I SS}</span></span>
+<span id="cb37-148"><a href="#cb37-148" aria-hidden="true" tabindex="-1"></a><span class="in"># create the linear model </span></span>
+<span id="cb37-149"><a href="#cb37-149" aria-hidden="true" tabindex="-1"></a><span class="in">alpine.lm &lt;- lm(lnwt ~ place*site*spp, data=alpine)</span></span>
+<span id="cb37-150"><a href="#cb37-150" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-151"><a href="#cb37-151" aria-hidden="true" tabindex="-1"></a><span class="in"># type I (sequential) SS</span></span>
+<span id="cb37-152"><a href="#cb37-152" aria-hidden="true" tabindex="-1"></a><span class="in">anova(alpine.lm)</span></span>
+<span id="cb37-153"><a href="#cb37-153" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-154"><a href="#cb37-154" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-155"><a href="#cb37-155" aria-hidden="true" tabindex="-1"></a><span class="fu">## SAS</span></span>
+<span id="cb37-156"><a href="#cb37-156" aria-hidden="true" tabindex="-1"></a>Which matches SAS.</span>
+<span id="cb37-157"><a href="#cb37-157" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-158"><a href="#cb37-158" aria-hidden="true" tabindex="-1"></a><span class="in">```{sas SAS Type I SS}</span></span>
+<span id="cb37-159"><a href="#cb37-159" aria-hidden="true" tabindex="-1"></a><span class="in">proc glm;</span></span>
+<span id="cb37-160"><a href="#cb37-160" aria-hidden="true" tabindex="-1"></a><span class="in">  class place spp site;</span></span>
+<span id="cb37-161"><a href="#cb37-161" aria-hidden="true" tabindex="-1"></a><span class="in">  model lnwt = place site spp place*site place*spp site*spp place*site*spp / ss1;</span></span>
+<span id="cb37-162"><a href="#cb37-162" aria-hidden="true" tabindex="-1"></a><span class="in">run;</span></span>
+<span id="cb37-163"><a href="#cb37-163" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-164"><a href="#cb37-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-165"><a href="#cb37-165" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb37-166"><a href="#cb37-166" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-167"><a href="#cb37-167" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-168"><a href="#cb37-168" aria-hidden="true" tabindex="-1"></a>To demonstrate the idea of comparing null and alternative models instead of using the default ANOVA table, let's test if we need to include site in our model given that we are already including place. This hypothesis test corresponds site in the Type I SS ANOVA table above.</span>
+<span id="cb37-169"><a href="#cb37-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-172"><a href="#cb37-172" aria-hidden="true" tabindex="-1"></a><span class="in">```{r}</span></span>
+<span id="cb37-173"><a href="#cb37-173" aria-hidden="true" tabindex="-1"></a>null.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(lnwt <span class="sc">~</span> place, <span class="at">data=</span>alpine)</span>
+<span id="cb37-174"><a href="#cb37-174" aria-hidden="true" tabindex="-1"></a>alt.lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(lnwt <span class="sc">~</span> place <span class="sc">+</span> site, <span class="at">data=</span>alpine)</span>
+<span id="cb37-175"><a href="#cb37-175" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-176"><a href="#cb37-176" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(alt.lm)</span>
+<span id="cb37-177"><a href="#cb37-177" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-178"><a href="#cb37-178" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(null.lm, alt.lm)</span>
+<span id="cb37-179"><a href="#cb37-179" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-180"><a href="#cb37-180" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-181"><a href="#cb37-181" aria-hidden="true" tabindex="-1"></a>Again, the SS and MS for site match the ANOVA output, however the F statistic and p-value do not match because they are calculated from the MSE of the alternative model only containing place and site.</span>
+<span id="cb37-182"><a href="#cb37-182" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-183"><a href="#cb37-183" aria-hidden="true" tabindex="-1"></a><span class="in">```{r Type I checks}</span></span>
+<span id="cb37-184"><a href="#cb37-184" aria-hidden="true" tabindex="-1"></a><span class="in"># anova </span></span>
+<span id="cb37-185"><a href="#cb37-185" aria-hidden="true" tabindex="-1"></a><span class="in"># mean sq / mse (of full model)</span></span>
+<span id="cb37-186"><a href="#cb37-186" aria-hidden="true" tabindex="-1"></a><span class="in">0.2702 / 0.2672 # 1.01 F-stat</span></span>
+<span id="cb37-187"><a href="#cb37-187" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-188"><a href="#cb37-188" aria-hidden="true" tabindex="-1"></a><span class="in"># mean sq / mse (of alt model)</span></span>
+<span id="cb37-189"><a href="#cb37-189" aria-hidden="true" tabindex="-1"></a><span class="in">0.2702 / 0.56093 # 0.4817 F-stat</span></span>
+<span id="cb37-190"><a href="#cb37-190" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-191"><a href="#cb37-191" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-192"><a href="#cb37-192" aria-hidden="true" tabindex="-1"></a>Be careful!</span>
+<span id="cb37-193"><a href="#cb37-193" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-194"><a href="#cb37-194" aria-hidden="true" tabindex="-1"></a><span class="fu">### Type II SS</span></span>
+<span id="cb37-195"><a href="#cb37-195" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-196"><a href="#cb37-196" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb37-197"><a href="#cb37-197" aria-hidden="true" tabindex="-1"></a><span class="fu">## R</span></span>
+<span id="cb37-198"><a href="#cb37-198" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-199"><a href="#cb37-199" aria-hidden="true" tabindex="-1"></a>Next, we will do Type II SS in R using <span class="in">`car::Anova`</span> with <span class="in">`type = 2`</span></span>
+<span id="cb37-200"><a href="#cb37-200" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-201"><a href="#cb37-201" aria-hidden="true" tabindex="-1"></a><span class="in">```{r R Type II}</span></span>
+<span id="cb37-202"><a href="#cb37-202" aria-hidden="true" tabindex="-1"></a><span class="in"># type II (hierarchical) SS</span></span>
+<span id="cb37-203"><a href="#cb37-203" aria-hidden="true" tabindex="-1"></a><span class="in">car::Anova(alpine.lm, type=2)</span></span>
+<span id="cb37-204"><a href="#cb37-204" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-205"><a href="#cb37-205" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-206"><a href="#cb37-206" aria-hidden="true" tabindex="-1"></a><span class="fu">## SAS</span></span>
+<span id="cb37-207"><a href="#cb37-207" aria-hidden="true" tabindex="-1"></a>Which matches SAS</span>
+<span id="cb37-208"><a href="#cb37-208" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-209"><a href="#cb37-209" aria-hidden="true" tabindex="-1"></a><span class="in">```{sas SAS Type II SS}</span></span>
+<span id="cb37-210"><a href="#cb37-210" aria-hidden="true" tabindex="-1"></a><span class="in">proc glm;</span></span>
+<span id="cb37-211"><a href="#cb37-211" aria-hidden="true" tabindex="-1"></a><span class="in">  class place spp site;</span></span>
+<span id="cb37-212"><a href="#cb37-212" aria-hidden="true" tabindex="-1"></a><span class="in">  model lnwt = place site spp place*site place*spp site*spp place*site*spp / ss2;</span></span>
+<span id="cb37-213"><a href="#cb37-213" aria-hidden="true" tabindex="-1"></a><span class="in">run;</span></span>
+<span id="cb37-214"><a href="#cb37-214" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-215"><a href="#cb37-215" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-216"><a href="#cb37-216" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb37-217"><a href="#cb37-217" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-218"><a href="#cb37-218" aria-hidden="true" tabindex="-1"></a><span class="fu">### Type III SS</span></span>
+<span id="cb37-219"><a href="#cb37-219" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-220"><a href="#cb37-220" aria-hidden="true" tabindex="-1"></a>::: panel-tabset</span>
+<span id="cb37-221"><a href="#cb37-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-222"><a href="#cb37-222" aria-hidden="true" tabindex="-1"></a><span class="fu">## R</span></span>
+<span id="cb37-223"><a href="#cb37-223" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-224"><a href="#cb37-224" aria-hidden="true" tabindex="-1"></a>Now, the more complex Type III SS in R. We will show the results from   <span class="in">`emmeans::joint_tests`</span>, which match SAS. We will also show <span class="in">`car::Anova`</span> with and without an orthogonal basis.</span>
+<span id="cb37-225"><a href="#cb37-225" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-226"><a href="#cb37-226" aria-hidden="true" tabindex="-1"></a><span class="in">```{r Type III}</span></span>
+<span id="cb37-227"><a href="#cb37-227" aria-hidden="true" tabindex="-1"></a><span class="in"># use emmeans::joint_tests</span></span>
+<span id="cb37-228"><a href="#cb37-228" aria-hidden="true" tabindex="-1"></a><span class="in">emmeans::joint_tests(alpine.lm)</span></span>
+<span id="cb37-229"><a href="#cb37-229" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-230"><a href="#cb37-230" aria-hidden="true" tabindex="-1"></a><span class="in"># or switch to an orthogonal basis for car::Anova</span></span>
+<span id="cb37-231"><a href="#cb37-231" aria-hidden="true" tabindex="-1"></a><span class="in">options(contrasts = c('contr.sum', 'contr.poly') )</span></span>
+<span id="cb37-232"><a href="#cb37-232" aria-hidden="true" tabindex="-1"></a><span class="in">alpine2.lm &lt;- lm(lnwt ~ place*site*spp, data=alpine)</span></span>
+<span id="cb37-233"><a href="#cb37-233" aria-hidden="true" tabindex="-1"></a><span class="in">car::Anova(alpine2.lm, type=3)</span></span>
+<span id="cb37-234"><a href="#cb37-234" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-235"><a href="#cb37-235" aria-hidden="true" tabindex="-1"></a><span class="in"># otherwise, car::Anova does not match joint_tests or SAS</span></span>
+<span id="cb37-236"><a href="#cb37-236" aria-hidden="true" tabindex="-1"></a><span class="in">car::Anova(alpine.lm, type=3)</span></span>
+<span id="cb37-237"><a href="#cb37-237" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-238"><a href="#cb37-238" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-239"><a href="#cb37-239" aria-hidden="true" tabindex="-1"></a>The <span class="in">`joint_tests`</span> and orthogonal <span class="in">`car::Anova`</span> output matches SAS, however <span class="in">`car::Anova`</span> on the original <span class="in">`alpine.lm`</span> object differs.</span>
+<span id="cb37-240"><a href="#cb37-240" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-241"><a href="#cb37-241" aria-hidden="true" tabindex="-1"></a><span class="fu">## SAS</span></span>
+<span id="cb37-242"><a href="#cb37-242" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-243"><a href="#cb37-243" aria-hidden="true" tabindex="-1"></a><span class="in">```{sas SAS Type III SS}</span></span>
+<span id="cb37-244"><a href="#cb37-244" aria-hidden="true" tabindex="-1"></a><span class="in">proc glm;</span></span>
+<span id="cb37-245"><a href="#cb37-245" aria-hidden="true" tabindex="-1"></a><span class="in">  class place spp site;</span></span>
+<span id="cb37-246"><a href="#cb37-246" aria-hidden="true" tabindex="-1"></a><span class="in">  model lnwt = place site spp place*site place*spp site*spp place*site*spp / ss3;</span></span>
+<span id="cb37-247"><a href="#cb37-247" aria-hidden="true" tabindex="-1"></a><span class="in">run;</span></span>
+<span id="cb37-248"><a href="#cb37-248" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-249"><a href="#cb37-249" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-250"><a href="#cb37-250" aria-hidden="true" tabindex="-1"></a>:::</span>
+<span id="cb37-251"><a href="#cb37-251" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-252"><a href="#cb37-252" aria-hidden="true" tabindex="-1"></a>Let us again look at the idea of comparing null and alternative models by testing for the three-way interaction given that we are including all other model terms. This hypothesis test corresponds to the three-way interaction in the Type III SS ANOVA table above.</span>
+<span id="cb37-253"><a href="#cb37-253" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-254"><a href="#cb37-254" aria-hidden="true" tabindex="-1"></a><span class="in">```{r null vs alt Type III}</span></span>
+<span id="cb37-255"><a href="#cb37-255" aria-hidden="true" tabindex="-1"></a><span class="in">null.lm2 &lt;- lm(lnwt ~ place + site + spp + </span></span>
+<span id="cb37-256"><a href="#cb37-256" aria-hidden="true" tabindex="-1"></a><span class="in">                 place:site + place:spp + site:spp,</span></span>
+<span id="cb37-257"><a href="#cb37-257" aria-hidden="true" tabindex="-1"></a><span class="in">               , data=alpine)</span></span>
+<span id="cb37-258"><a href="#cb37-258" aria-hidden="true" tabindex="-1"></a><span class="in">alt.lm2 &lt;- lm(lnwt ~ place*site*spp, data=alpine)</span></span>
+<span id="cb37-259"><a href="#cb37-259" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-260"><a href="#cb37-260" aria-hidden="true" tabindex="-1"></a><span class="in">anova(null.lm2, alt.lm2)</span></span>
+<span id="cb37-261"><a href="#cb37-261" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-262"><a href="#cb37-262" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-263"><a href="#cb37-263" aria-hidden="true" tabindex="-1"></a>This time, the F statistic and p-value match because the alternative model is the full model, as with all hypothesis tests associated with Type III SS.</span>
+<span id="cb37-264"><a href="#cb37-264" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-265"><a href="#cb37-265" aria-hidden="true" tabindex="-1"></a><span class="fu">## Bonus Code</span></span>
+<span id="cb37-266"><a href="#cb37-266" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-267"><a href="#cb37-267" aria-hidden="true" tabindex="-1"></a><span class="fu">### After ANOVA in R: emmeans with Alpine Data</span></span>
+<span id="cb37-268"><a href="#cb37-268" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-269"><a href="#cb37-269" aria-hidden="true" tabindex="-1"></a>To quote Philip, "R doesn't make 'after the ANOVA' especially easy. The <span class="in">`emmeans`</span> (successor to <span class="in">`lsmeans`</span>) package implements a powerful set of after the ANOVA tools. Basic approach is to make a <span class="in">`emmeans`</span> object for the factor of interest, then look at properties of that object.</span>
+<span id="cb37-270"><a href="#cb37-270" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-271"><a href="#cb37-271" aria-hidden="true" tabindex="-1"></a>This example code includes calculating cell means, means within and averaging over place, contrast examples, and much more.</span>
+<span id="cb37-272"><a href="#cb37-272" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-273"><a href="#cb37-273" aria-hidden="true" tabindex="-1"></a><span class="in">```{r load emmeans}</span></span>
+<span id="cb37-274"><a href="#cb37-274" aria-hidden="true" tabindex="-1"></a><span class="in">#| include: false</span></span>
+<span id="cb37-275"><a href="#cb37-275" aria-hidden="true" tabindex="-1"></a><span class="in">library(emmeans)</span></span>
+<span id="cb37-276"><a href="#cb37-276" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-277"><a href="#cb37-277" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-278"><a href="#cb37-278" aria-hidden="true" tabindex="-1"></a><span class="in">```{r emmeans bonus}</span></span>
+<span id="cb37-279"><a href="#cb37-279" aria-hidden="true" tabindex="-1"></a><span class="in">#| eval: false</span></span>
+<span id="cb37-280"><a href="#cb37-280" aria-hidden="true" tabindex="-1"></a><span class="in"># analysis using emmeans (all three factors are of interest)</span></span>
+<span id="cb37-281"><a href="#cb37-281" aria-hidden="true" tabindex="-1"></a><span class="in">alpine.emm &lt;- emmeans(alpine.lm, c('spp','site','place'))</span></span>
+<span id="cb37-282"><a href="#cb37-282" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-283"><a href="#cb37-283" aria-hidden="true" tabindex="-1"></a><span class="in"># cell means with se, df and 95% CI</span></span>
+<span id="cb37-284"><a href="#cb37-284" aria-hidden="true" tabindex="-1"></a><span class="in">alpine.emm</span></span>
+<span id="cb37-285"><a href="#cb37-285" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-286"><a href="#cb37-286" aria-hidden="true" tabindex="-1"></a><span class="in"># means within each place</span></span>
+<span id="cb37-287"><a href="#cb37-287" aria-hidden="true" tabindex="-1"></a><span class="in">emmip(alpine.lm, spp ~ site | place)</span></span>
+<span id="cb37-288"><a href="#cb37-288" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-289"><a href="#cb37-289" aria-hidden="true" tabindex="-1"></a><span class="in"># cell means for site and spp averaging over place</span></span>
+<span id="cb37-290"><a href="#cb37-290" aria-hidden="true" tabindex="-1"></a><span class="in">emmeans(alpine.lm, c('site','spp'))</span></span>
+<span id="cb37-291"><a href="#cb37-291" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-292"><a href="#cb37-292" aria-hidden="true" tabindex="-1"></a><span class="in"># F tests of site effects at each place and spp</span></span>
+<span id="cb37-293"><a href="#cb37-293" aria-hidden="true" tabindex="-1"></a><span class="in">joint_tests(alpine.lm, by=c('place','spp'))</span></span>
+<span id="cb37-294"><a href="#cb37-294" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-295"><a href="#cb37-295" aria-hidden="true" tabindex="-1"></a><span class="in"># pairwise comparisons between all cells (not recommended!)</span></span>
+<span id="cb37-296"><a href="#cb37-296" aria-hidden="true" tabindex="-1"></a><span class="in">emmeans(alpine.lm, pairwise ~ place:site:spp)</span></span>
+<span id="cb37-297"><a href="#cb37-297" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-298"><a href="#cb37-298" aria-hidden="true" tabindex="-1"></a><span class="in"># or between site and spp averaged over place</span></span>
+<span id="cb37-299"><a href="#cb37-299" aria-hidden="true" tabindex="-1"></a><span class="in">emmeans(alpine.lm, pairwise ~ site:spp)</span></span>
+<span id="cb37-300"><a href="#cb37-300" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-301"><a href="#cb37-301" aria-hidden="true" tabindex="-1"></a><span class="in"># can specify same request as a set of factors and desired contrast(s)</span></span>
+<span id="cb37-302"><a href="#cb37-302" aria-hidden="true" tabindex="-1"></a><span class="in">emmeans(alpine.lm, c('site','spp'), contr = 'pairwise')</span></span>
+<span id="cb37-303"><a href="#cb37-303" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-304"><a href="#cb37-304" aria-hidden="true" tabindex="-1"></a><span class="in"># sites for each spp averaging over place</span></span>
+<span id="cb37-305"><a href="#cb37-305" aria-hidden="true" tabindex="-1"></a><span class="in">emmeans(alpine.lm, pairwise ~ site | spp)</span></span>
+<span id="cb37-306"><a href="#cb37-306" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-307"><a href="#cb37-307" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-308"><a href="#cb37-308" aria-hidden="true" tabindex="-1"></a><span class="in">`?'contrast-methods'`</span> lists all the options for built-in contrasts</span>
+<span id="cb37-309"><a href="#cb37-309" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-310"><a href="#cb37-310" aria-hidden="true" tabindex="-1"></a>Remember that you must know the order of the groups to properly specify the contrast. You can see the order of the group in many different ways including</span>
+<span id="cb37-311"><a href="#cb37-311" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-312"><a href="#cb37-312" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Look at the order of the groups in the emmeans() output.</span>
+<span id="cb37-313"><a href="#cb37-313" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-314"><a href="#cb37-314" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Print the emmeans object.</span>
+<span id="cb37-315"><a href="#cb37-315" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-316"><a href="#cb37-316" aria-hidden="true" tabindex="-1"></a><span class="ss">-   </span>Look at the sorted order of unique factor values: <span class="in">`sort(unique(factor))`</span></span>
+<span id="cb37-317"><a href="#cb37-317" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-318"><a href="#cb37-318" aria-hidden="true" tabindex="-1"></a><span class="in">```{r contrasts bonus}</span></span>
+<span id="cb37-319"><a href="#cb37-319" aria-hidden="true" tabindex="-1"></a><span class="in">#| eval: false</span></span>
+<span id="cb37-320"><a href="#cb37-320" aria-hidden="true" tabindex="-1"></a><span class="in"># let's focus on the sites </span></span>
+<span id="cb37-321"><a href="#cb37-321" aria-hidden="true" tabindex="-1"></a><span class="in">alpine.emm1 &lt;- emmeans(alpine.lm, 'site')</span></span>
+<span id="cb37-322"><a href="#cb37-322" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-323"><a href="#cb37-323" aria-hidden="true" tabindex="-1"></a><span class="in"># all pairwise comparisons is easy</span></span>
+<span id="cb37-324"><a href="#cb37-324" aria-hidden="true" tabindex="-1"></a><span class="in">site.pairs &lt;- pairs(alpine.emm1) # Tukey adjustment by default</span></span>
+<span id="cb37-325"><a href="#cb37-325" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-326"><a href="#cb37-326" aria-hidden="true" tabindex="-1"></a><span class="in"># specifying summary( ) with adjust= allows you to choose the adjustment</span></span>
+<span id="cb37-327"><a href="#cb37-327" aria-hidden="true" tabindex="-1"></a><span class="in"># from tukey, bonferroni, none, scheffe, sidak, dunnettx</span></span>
+<span id="cb37-328"><a href="#cb37-328" aria-hidden="true" tabindex="-1"></a><span class="in">summary(site.pairs, adjust='none') </span></span>
+<span id="cb37-329"><a href="#cb37-329" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-330"><a href="#cb37-330" aria-hidden="true" tabindex="-1"></a><span class="in"># and specifying summary( ) with infer=c(T, F) gives you CI's</span></span>
+<span id="cb37-331"><a href="#cb37-331" aria-hidden="true" tabindex="-1"></a><span class="in">summary(site.pairs, infer=c(T,F))</span></span>
+<span id="cb37-332"><a href="#cb37-332" aria-hidden="true" tabindex="-1"></a><span class="in"># first value for infer is confidence intervals, second is tests</span></span>
+<span id="cb37-333"><a href="#cb37-333" aria-hidden="true" tabindex="-1"></a><span class="in"># so infer=c(F,F) just gives estimates, infer=c(T,T) gives both CI's and tests</span></span>
+<span id="cb37-334"><a href="#cb37-334" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-335"><a href="#cb37-335" aria-hidden="true" tabindex="-1"></a><span class="in"># or use confint() to which you can add adjust= to specify adjustments</span></span>
+<span id="cb37-336"><a href="#cb37-336" aria-hidden="true" tabindex="-1"></a><span class="in">confint(site.pairs)</span></span>
+<span id="cb37-337"><a href="#cb37-337" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-338"><a href="#cb37-338" aria-hidden="true" tabindex="-1"></a><span class="in"># can specify desired contrasts either in a call to emmeans() or contrast()</span></span>
+<span id="cb37-339"><a href="#cb37-339" aria-hidden="true" tabindex="-1"></a><span class="in"># notice you can provide multiple contrasts in one call, but you must always </span></span>
+<span id="cb37-340"><a href="#cb37-340" aria-hidden="true" tabindex="-1"></a><span class="in"># give a list even if you are only doing one contrast </span></span>
+<span id="cb37-341"><a href="#cb37-341" aria-hidden="true" tabindex="-1"></a><span class="in">contrast(alpine.emm1, list('D-MW'=c(1, -0.5, -0.5), 'M-W'=c(0, 1, -1)))</span></span>
+<span id="cb37-342"><a href="#cb37-342" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-343"><a href="#cb37-343" aria-hidden="true" tabindex="-1"></a><span class="in">alpine.emm2 &lt;- emmeans(alpine.lm, c('site', 'spp') )</span></span>
+<span id="cb37-344"><a href="#cb37-344" aria-hidden="true" tabindex="-1"></a><span class="in">alpine.c1 &lt;- contrast(alpine.emm2, by='spp', </span></span>
+<span id="cb37-345"><a href="#cb37-345" aria-hidden="true" tabindex="-1"></a><span class="in">                      list('D-MW'=c(1, -0.5, -0.5), </span></span>
+<span id="cb37-346"><a href="#cb37-346" aria-hidden="true" tabindex="-1"></a><span class="in">                           'M-W'=c(0, 1, -1)))</span></span>
+<span id="cb37-347"><a href="#cb37-347" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-348"><a href="#cb37-348" aria-hidden="true" tabindex="-1"></a><span class="in"># can get CI's for the contrasts </span></span>
+<span id="cb37-349"><a href="#cb37-349" aria-hidden="true" tabindex="-1"></a><span class="in">summary(alpine.c1,infer=c(T,F), adjust='bonferroni')</span></span>
+<span id="cb37-350"><a href="#cb37-350" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-351"><a href="#cb37-351" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-352"><a href="#cb37-352" aria-hidden="true" tabindex="-1"></a><span class="fu">### Broad vs Narrow Inference: Alpine Data Mixed Model</span></span>
+<span id="cb37-353"><a href="#cb37-353" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-354"><a href="#cb37-354" aria-hidden="true" tabindex="-1"></a>Let's treat the alpine data as a repeated experiment with a single pooled place<span class="sc">\*</span>anything interaction, random effect. The places are random (not ideal because only 1 df), so inference is broad-sense to population of places.</span>
+<span id="cb37-355"><a href="#cb37-355" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-356"><a href="#cb37-356" aria-hidden="true" tabindex="-1"></a><span class="in">```{r broad vs narrow in R}</span></span>
+<span id="cb37-357"><a href="#cb37-357" aria-hidden="true" tabindex="-1"></a><span class="in">#| eval: false</span></span>
+<span id="cb37-358"><a href="#cb37-358" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-359"><a href="#cb37-359" aria-hidden="true" tabindex="-1"></a><span class="in">library(lme4)</span></span>
+<span id="cb37-360"><a href="#cb37-360" aria-hidden="true" tabindex="-1"></a><span class="in">alpine.lmm &lt;- lmer(lnwt ~ site+spp+site:spp + (1|place) + (1|place:site:spp),</span></span>
+<span id="cb37-361"><a href="#cb37-361" aria-hidden="true" tabindex="-1"></a><span class="in">  data=alpine)</span></span>
+<span id="cb37-362"><a href="#cb37-362" aria-hidden="true" tabindex="-1"></a><span class="in">summary(alpine.lmm)  # mostly to see estimated variance components</span></span>
+<span id="cb37-363"><a href="#cb37-363" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-364"><a href="#cb37-364" aria-hidden="true" tabindex="-1"></a><span class="in">joint_tests(alpine.lmm)</span></span>
+<span id="cb37-365"><a href="#cb37-365" aria-hidden="true" tabindex="-1"></a><span class="in"># uses Kenward-Rogers df adjustments, different implementation than SAS </span></span>
+<span id="cb37-366"><a href="#cb37-366" aria-hidden="true" tabindex="-1"></a><span class="in"># (slightly different when all variance components &gt; 0, and quite different </span></span>
+<span id="cb37-367"><a href="#cb37-367" aria-hidden="true" tabindex="-1"></a><span class="in"># when one or more = 0). R seems to account for estimating the 0, SAS ignores the 0. </span></span>
+<span id="cb37-368"><a href="#cb37-368" aria-hidden="true" tabindex="-1"></a><span class="in"># to see the difference, remove the interaction variance from the model</span></span>
+<span id="cb37-369"><a href="#cb37-369" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-370"><a href="#cb37-370" aria-hidden="true" tabindex="-1"></a><span class="in">alpine2.lmm &lt;- lmer(lnwt ~ site+spp+site:spp + (1|place),</span></span>
+<span id="cb37-371"><a href="#cb37-371" aria-hidden="true" tabindex="-1"></a><span class="in">  data=alpine)</span></span>
+<span id="cb37-372"><a href="#cb37-372" aria-hidden="true" tabindex="-1"></a><span class="in">summary(alpine2.lmm)  # mostly to see estimated variance components</span></span>
+<span id="cb37-373"><a href="#cb37-373" aria-hidden="true" tabindex="-1"></a><span class="in">joint_tests(alpine2.lmm)</span></span>
+<span id="cb37-374"><a href="#cb37-374" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-375"><a href="#cb37-375" aria-hidden="true" tabindex="-1"></a><span class="in"># matches SAS with or without interaction variance</span></span>
+<span id="cb37-376"><a href="#cb37-376" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
+<span id="cb37-377"><a href="#cb37-377" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-378"><a href="#cb37-378" aria-hidden="true" tabindex="-1"></a><span class="in">```{r broad vs narrow in SAS, engine='verbatim'}</span></span>
+<span id="cb37-379"><a href="#cb37-379" aria-hidden="true" tabindex="-1"></a><span class="in">proc glimmix;</span></span>
+<span id="cb37-380"><a href="#cb37-380" aria-hidden="true" tabindex="-1"></a><span class="in">  class place spp site;</span></span>
+<span id="cb37-381"><a href="#cb37-381" aria-hidden="true" tabindex="-1"></a><span class="in">  model lnwt = site spp site*spp / ddfm = kr;</span></span>
+<span id="cb37-382"><a href="#cb37-382" aria-hidden="true" tabindex="-1"></a><span class="in">  random place place*site*spp;</span></span>
+<span id="cb37-383"><a href="#cb37-383" aria-hidden="true" tabindex="-1"></a><span class="in">  lsmeans site*spp;</span></span>
+<span id="cb37-384"><a href="#cb37-384" aria-hidden="true" tabindex="-1"></a><span class="in">  title 'Repeated experiment analysis, Kenward-Roger df adjustment';</span></span>
+<span id="cb37-385"><a href="#cb37-385" aria-hidden="true" tabindex="-1"></a><span class="in">run;</span></span>
+<span id="cb37-386"><a href="#cb37-386" aria-hidden="true" tabindex="-1"></a><span class="in">```</span></span>
 </code><button title="Copy to Clipboard" class="code-copy-button" data-in-quarto-modal=""><i class="bi"></i></button></pre></div>
 </div></div></div></div></div>
 </div> <!-- /content -->
