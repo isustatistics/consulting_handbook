@@ -2,12 +2,14 @@ project:
   type: book
   output-dir: docs
 book:
-  title: "Consulting Handbook"
+  title: "Iowa State University Department of Statistics Consulting Handbook"
   author: "Jarad Niemi, Rebekah Scott"
-  date: "9/17/2025"
+  date: "11/4/2025"
+  repo-url: https://github.com/isustatistics/consulting_handbook
+  repo-branch: main
+  
   chapters:
     - index.qmd
-    - intro.qmd
     
     - part: client_interactions.qmd
       chapters:

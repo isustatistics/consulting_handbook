@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>3&nbsp; ANOVA Nuances – Consulting Handbook</title>
+<title>2&nbsp; ANOVA Nuances – Iowa State University Department of Statistics Consulting Handbook</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -115,7 +115,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./statistical_methods.html">Statistical Methods</a></li><li class="breadcrumb-item"><a href="./anova_nuances.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">ANOVA Nuances</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./statistical_methods.html">Statistical Methods</a></li><li class="breadcrumb-item"><a href="./anova_nuances.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">ANOVA Nuances</span></a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
@@ -130,7 +130,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
     <div class="pt-lg-2 mt-2 text-left sidebar-header">
     <div class="sidebar-title mb-0 py-0">
-      <a href="./">Consulting Handbook</a> 
+      <a href="./">Iowa State University Department of Statistics Consulting Handbook</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/isustatistics/consulting_handbook" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+</div>
     </div>
       </div>
         <div class="mt-2 flex-shrink-0 align-items-center">
@@ -143,13 +146,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Preface</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="./intro.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction</span></span></a>
+ <span class="menu-text">NOTE: This handbook is a work in progress!</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -164,7 +161,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./active_listening.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Active Listening</span></span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Active Listening</span></span></a>
   </div>
 </li>
       </ul>
@@ -181,13 +178,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./anova_nuances.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">ANOVA Nuances</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">ANOVA Nuances</span></span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./exp_design.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Experimental Design</span></span></a>
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Experimental Design</span></span></a>
   </div>
 </li>
       </ul>
@@ -204,7 +201,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./example_study.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Example Study</span></span></a>
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Example Study</span></span></a>
   </div>
 </li>
       </ul>
@@ -225,22 +222,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#sums-of-squares-refresher" id="toc-sums-of-squares-refresher" class="nav-link active" data-scroll-target="#sums-of-squares-refresher"><span class="header-section-number">3.1</span> Sums of Squares Refresher</a></li>
-  <li><a href="#changing-ss-types" id="toc-changing-ss-types" class="nav-link" data-scroll-target="#changing-ss-types"><span class="header-section-number">3.2</span> Changing SS Types</a>
+  <li><a href="#sums-of-squares-refresher" id="toc-sums-of-squares-refresher" class="nav-link active" data-scroll-target="#sums-of-squares-refresher"><span class="header-section-number">2.1</span> Sums of Squares Refresher</a></li>
+  <li><a href="#changing-ss-types" id="toc-changing-ss-types" class="nav-link" data-scroll-target="#changing-ss-types"><span class="header-section-number">2.2</span> Changing SS Types</a>
   <ul class="collapse">
-  <li><a href="#in-sas" id="toc-in-sas" class="nav-link" data-scroll-target="#in-sas"><span class="header-section-number">3.2.1</span> In SAS</a></li>
-  <li><a href="#in-r" id="toc-in-r" class="nav-link" data-scroll-target="#in-r"><span class="header-section-number">3.2.2</span> In R</a></li>
+  <li><a href="#in-sas" id="toc-in-sas" class="nav-link" data-scroll-target="#in-sas"><span class="header-section-number">2.2.1</span> In SAS</a></li>
+  <li><a href="#in-r" id="toc-in-r" class="nav-link" data-scroll-target="#in-r"><span class="header-section-number">2.2.2</span> In R</a></li>
   </ul></li>
-  <li><a href="#example-alpine-data" id="toc-example-alpine-data" class="nav-link" data-scroll-target="#example-alpine-data"><span class="header-section-number">3.3</span> Example: Alpine Data</a>
+  <li><a href="#example-alpine-data" id="toc-example-alpine-data" class="nav-link" data-scroll-target="#example-alpine-data"><span class="header-section-number">2.3</span> Example: Alpine Data</a>
   <ul class="collapse">
-  <li><a href="#type-i-ss" id="toc-type-i-ss" class="nav-link" data-scroll-target="#type-i-ss"><span class="header-section-number">3.3.1</span> Type I SS</a></li>
-  <li><a href="#type-ii-ss" id="toc-type-ii-ss" class="nav-link" data-scroll-target="#type-ii-ss"><span class="header-section-number">3.3.2</span> Type II SS</a></li>
-  <li><a href="#type-iii-ss" id="toc-type-iii-ss" class="nav-link" data-scroll-target="#type-iii-ss"><span class="header-section-number">3.3.3</span> Type III SS</a></li>
+  <li><a href="#type-i-ss" id="toc-type-i-ss" class="nav-link" data-scroll-target="#type-i-ss"><span class="header-section-number">2.3.1</span> Type I SS</a></li>
+  <li><a href="#type-ii-ss" id="toc-type-ii-ss" class="nav-link" data-scroll-target="#type-ii-ss"><span class="header-section-number">2.3.2</span> Type II SS</a></li>
+  <li><a href="#type-iii-ss" id="toc-type-iii-ss" class="nav-link" data-scroll-target="#type-iii-ss"><span class="header-section-number">2.3.3</span> Type III SS</a></li>
   </ul></li>
-  <li><a href="#bonus-code" id="toc-bonus-code" class="nav-link" data-scroll-target="#bonus-code"><span class="header-section-number">3.4</span> Bonus Code</a>
+  <li><a href="#bonus-code" id="toc-bonus-code" class="nav-link" data-scroll-target="#bonus-code"><span class="header-section-number">2.4</span> Bonus Code</a>
   <ul class="collapse">
-  <li><a href="#after-anova-in-r-emmeans-with-alpine-data" id="toc-after-anova-in-r-emmeans-with-alpine-data" class="nav-link" data-scroll-target="#after-anova-in-r-emmeans-with-alpine-data"><span class="header-section-number">3.4.1</span> After ANOVA in R: emmeans with Alpine Data</a></li>
-  <li><a href="#broad-vs-narrow-inference-alpine-data-mixed-model" id="toc-broad-vs-narrow-inference-alpine-data-mixed-model" class="nav-link" data-scroll-target="#broad-vs-narrow-inference-alpine-data-mixed-model"><span class="header-section-number">3.4.2</span> Broad vs Narrow Inference: Alpine Data Mixed Model</a></li>
+  <li><a href="#after-anova-in-r-emmeans-with-alpine-data" id="toc-after-anova-in-r-emmeans-with-alpine-data" class="nav-link" data-scroll-target="#after-anova-in-r-emmeans-with-alpine-data"><span class="header-section-number">2.4.1</span> After ANOVA in R: emmeans with Alpine Data</a></li>
+  <li><a href="#broad-vs-narrow-inference-alpine-data-mixed-model" id="toc-broad-vs-narrow-inference-alpine-data-mixed-model" class="nav-link" data-scroll-target="#broad-vs-narrow-inference-alpine-data-mixed-model"><span class="header-section-number">2.4.2</span> Broad vs Narrow Inference: Alpine Data Mixed Model</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -248,9 +245,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./statistical_methods.html">Statistical Methods</a></li><li class="breadcrumb-item"><a href="./anova_nuances.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">ANOVA Nuances</span></a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./statistical_methods.html">Statistical Methods</a></li><li class="breadcrumb-item"><a href="./anova_nuances.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">ANOVA Nuances</span></a></li></ol></nav>
 <div class="quarto-title">
-<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">ANOVA Nuances</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
+<div class="quarto-title-block"><div><h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">ANOVA Nuances</span></h1><button type="button" class="btn code-tools-button dropdown-toggle" id="quarto-code-tools-menu" data-bs-toggle="dropdown" aria-expanded="false"><i class="bi"></i> Code</button><ul class="dropdown-menu dropdown-menu-end" aria-labelelledby="quarto-code-tools-menu"><li><a id="quarto-show-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Show All Code</a></li><li><a id="quarto-hide-all-code" class="dropdown-item" href="javascript:void(0)" role="button">Hide All Code</a></li><li><hr class="dropdown-divider"></li><li><a id="quarto-view-source" class="dropdown-item" href="javascript:void(0)" role="button">View Source</a></li></ul></div></div>
 </div>
 
 
@@ -267,8 +264,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="sums-of-squares-refresher" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="sums-of-squares-refresher"><span class="header-section-number">3.1</span> Sums of Squares Refresher</h2>
+<section id="sums-of-squares-refresher" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="sums-of-squares-refresher"><span class="header-section-number">2.1</span> Sums of Squares Refresher</h2>
 <p>The three common types of Sums of Squares (SS) are equivalent for balanced data: Type I, II, and III (I believe SAS is to blame for the unhelpful naming). These SS only differ when data is unbalanced.</p>
 <p>Sums of Squares can be thought of in many different ways, from calculating squared distances from the regression lines and group means to subtracting projection matrices with nested column spaces. We can consider the SS as <strong>sequential F-tests for a null or alternative model</strong> (from The Statistical Sleuth), where the scaled difference in SS (alternative - null) form the numerator in the F-test. This can also be thought of in a regression context with setting some coefficients to zero. Each of the three SS types have a particular style of F-tests, which are explained below.</p>
 <p>Notice that <strong>the F-test for the highest order interaction is the same for each SS type.</strong></p>
@@ -398,10 +395,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>where m1 is the null model and m2 is the alternative model.</p>
 <p>When you test a null vs alternative model this way in R, the F statistic and p-value will only match the ANOVA table if the alternative model is the full model containing every term. The SS and Means Squares (MS) will all be the same. Only Type III SS always specify the alternative model as the full model.</p>
 </section>
-<section id="changing-ss-types" class="level2" data-number="3.2">
-<h2 data-number="3.2" class="anchored" data-anchor-id="changing-ss-types"><span class="header-section-number">3.2</span> Changing SS Types</h2>
-<section id="in-sas" class="level3" data-number="3.2.1">
-<h3 data-number="3.2.1" class="anchored" data-anchor-id="in-sas"><span class="header-section-number">3.2.1</span> In SAS</h3>
+<section id="changing-ss-types" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="changing-ss-types"><span class="header-section-number">2.2</span> Changing SS Types</h2>
+<section id="in-sas" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="in-sas"><span class="header-section-number">2.2.1</span> In SAS</h3>
 <p>Specifying the SS type in SAS is very simple - you only need to specify <code>/ ss3</code> in the model statement for <code>proc glm</code> or <code>method = type3</code> in <code>proc mixed</code>. For example, for Type III</p>
 <div class="sourceCode" id="cb2"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>/* proc glm */</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>proc glm data=dat;</span>
@@ -416,8 +413,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>    model y = x1 x2 x1*x2;</span>
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>run;</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
-<section id="in-r" class="level3" data-number="3.2.2">
-<h3 data-number="3.2.2" class="anchored" data-anchor-id="in-r"><span class="header-section-number">3.2.2</span> In R</h3>
+<section id="in-r" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="in-r"><span class="header-section-number">2.2.2</span> In R</h3>
 <p>Specifying the SS type in R is tricky.</p>
 <p><code>anova</code> in base R calculates Type I SS. For example,</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode default code-with-copy"><code class="sourceCode default"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dat_lm &lt;- lm(y ~ x1 * x2, data=dat)</span>
@@ -435,11 +432,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>car::Anova(dat_lm2, type=3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 </section>
-<section id="example-alpine-data" class="level2" data-number="3.3">
-<h2 data-number="3.3" class="anchored" data-anchor-id="example-alpine-data"><span class="header-section-number">3.3</span> Example: Alpine Data</h2>
+<section id="example-alpine-data" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="example-alpine-data"><span class="header-section-number">2.3</span> Example: Alpine Data</h2>
 <p>The alpine data have three factors: place (Cumb, Penn), species (grac, nive), site (Dry, Mid, Wet) with unequal unequal sample sizes, but no missing cells. We will analyze this as a three-way factorial. Credit to Dr.&nbsp;Philip Dixon for this data and example.</p>
-<section id="type-i-ss" class="level3" data-number="3.3.1">
-<h3 data-number="3.3.1" class="anchored" data-anchor-id="type-i-ss"><span class="header-section-number">3.3.1</span> Type I SS</h3>
+<section id="type-i-ss" class="level3" data-number="2.3.1">
+<h3 data-number="2.3.1" class="anchored" data-anchor-id="type-i-ss"><span class="header-section-number">2.3.1</span> Type I SS</h3>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" aria-current="page">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-1-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-2" role="tab" aria-controls="tabset-1-2" aria-selected="false">SAS</a></li></ul>
 <div class="tab-content">
@@ -557,8 +554,8 @@ Model 2: lnwt ~ place + site
 </div>
 <p>Be careful!</p>
 </section>
-<section id="type-ii-ss" class="level3" data-number="3.3.2">
-<h3 data-number="3.3.2" class="anchored" data-anchor-id="type-ii-ss"><span class="header-section-number">3.3.2</span> Type II SS</h3>
+<section id="type-ii-ss" class="level3" data-number="2.3.2">
+<h3 data-number="2.3.2" class="anchored" data-anchor-id="type-ii-ss"><span class="header-section-number">2.3.2</span> Type II SS</h3>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-2-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-2" role="tab" aria-controls="tabset-2-2" aria-selected="false">SAS</a></li></ul>
 <div class="tab-content">
@@ -618,8 +615,8 @@ run;</code></pre>
 </div>
 </div>
 </section>
-<section id="type-iii-ss" class="level3" data-number="3.3.3">
-<h3 data-number="3.3.3" class="anchored" data-anchor-id="type-iii-ss"><span class="header-section-number">3.3.3</span> Type III SS</h3>
+<section id="type-iii-ss" class="level3" data-number="2.3.3">
+<h3 data-number="2.3.3" class="anchored" data-anchor-id="type-iii-ss"><span class="header-section-number">2.3.3</span> Type III SS</h3>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-3-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-1" role="tab" aria-controls="tabset-3-1" aria-selected="true">R</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-3-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-3-2" role="tab" aria-controls="tabset-3-2" aria-selected="false">SAS</a></li></ul>
 <div class="tab-content">
@@ -742,10 +739,10 @@ Model 2: lnwt ~ place * site * spp
 <p>This time, the F statistic and p-value match because the alternative model is the full model, as with all hypothesis tests associated with Type III SS.</p>
 </section>
 </section>
-<section id="bonus-code" class="level2" data-number="3.4">
-<h2 data-number="3.4" class="anchored" data-anchor-id="bonus-code"><span class="header-section-number">3.4</span> Bonus Code</h2>
-<section id="after-anova-in-r-emmeans-with-alpine-data" class="level3" data-number="3.4.1">
-<h3 data-number="3.4.1" class="anchored" data-anchor-id="after-anova-in-r-emmeans-with-alpine-data"><span class="header-section-number">3.4.1</span> After ANOVA in R: emmeans with Alpine Data</h3>
+<section id="bonus-code" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="bonus-code"><span class="header-section-number">2.4</span> Bonus Code</h2>
+<section id="after-anova-in-r-emmeans-with-alpine-data" class="level3" data-number="2.4.1">
+<h3 data-number="2.4.1" class="anchored" data-anchor-id="after-anova-in-r-emmeans-with-alpine-data"><span class="header-section-number">2.4.1</span> After ANOVA in R: emmeans with Alpine Data</h3>
 <p>To quote Philip, “R doesn’t make ‘after the ANOVA’ especially easy. The <code>emmeans</code> (successor to <code>lsmeans</code>) package implements a powerful set of after the ANOVA tools. Basic approach is to make a <code>emmeans</code> object for the factor of interest, then look at properties of that object.</p>
 <p>This example code includes calculating cell means, means within and averaging over place, contrast examples, and much more.</p>
 <div class="cell">
@@ -822,8 +819,8 @@ Model 2: lnwt ~ place * site * spp
 </details>
 </div>
 </section>
-<section id="broad-vs-narrow-inference-alpine-data-mixed-model" class="level3" data-number="3.4.2">
-<h3 data-number="3.4.2" class="anchored" data-anchor-id="broad-vs-narrow-inference-alpine-data-mixed-model"><span class="header-section-number">3.4.2</span> Broad vs Narrow Inference: Alpine Data Mixed Model</h3>
+<section id="broad-vs-narrow-inference-alpine-data-mixed-model" class="level3" data-number="2.4.2">
+<h3 data-number="2.4.2" class="anchored" data-anchor-id="broad-vs-narrow-inference-alpine-data-mixed-model"><span class="header-section-number">2.4.2</span> Broad vs Narrow Inference: Alpine Data Mixed Model</h3>
 <p>Let’s treat the alpine data as a repeated experiment with a single pooled place*anything interaction, random effect. The places are random (not ideal because only 1 df), so inference is broad-sense to population of places.</p>
 <div class="cell">
 <details open="" class="code-fold">
@@ -1338,7 +1335,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   </div>
   <div class="nav-page nav-page-next">
       <a href="./exp_design.html" class="pagination-link" aria-label="Experimental Design">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Experimental Design</span></span> <i class="bi bi-arrow-right-short"></i>
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Experimental Design</span></span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav><div class="modal fade" id="quarto-embedded-source-code-modal" tabindex="-1" aria-labelledby="quarto-embedded-source-code-modal-label" aria-hidden="true"><div class="modal-dialog modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h5 class="modal-title" id="quarto-embedded-source-code-modal-label">Source Code</h5><button class="btn-close" data-bs-dismiss="modal"></button></div><div class="modal-body"><div class="">

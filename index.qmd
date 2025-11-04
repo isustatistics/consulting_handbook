@@ -1,4 +1,6 @@
-# Preface {.unnumbered}
+## NOTE: This handbook is a work in progress! {.unnumbered}
+
+# Introduction {.unnumbered}
 
 In today’s data-driven world, statistical consulting plays a vital role in supporting research across all domains. This handbook is designed to serve as a practical guide for statistical consultants in a university environment, and is divided into three sections: Client Interactions, Statistical Methodology, and Case Studies.
 

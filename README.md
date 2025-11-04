@@ -1,8 +1,8 @@
-# consulting_handbook
+# Consulting Handbook
 
-A repository for a consulting handbook
+A repository for the [Consulting Handbook](https://isustatistics.github.io/consulting_handbook/) for Statistical Consultants in the Department of Statistics at Iowa State University.
 
-**Proposed outline (as of 2025-10-23)**
+## Proposed outline (as of 2025-10-23)\
 
 Preface
 
