@@ -20,31 +20,11 @@
     ]
   },
   {
-    "objectID": "summary.html",
-    "href": "summary.html",
-    "title": "2  Summary",
-    "section": "",
-    "text": "In summary, this book has no content whatsoever.\n\n1 + 1\n\n[1] 2",
-    "crumbs": [
-      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Summary</span>"
-    ]
-  },
-  {
-    "objectID": "references.html",
-    "href": "references.html",
-    "title": "References",
-    "section": "",
-    "text": "Knuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97.",
-    "crumbs": [
-      "References"
-    ]
-  },
-  {
     "objectID": "client_interactions.html",
     "href": "client_interactions.html",
     "title": "Client Interactions",
     "section": "",
-    "text": "In summary, this book has no content whatsoever.\n\n1 + 1\n\n[1] 2",
+    "text": "In summary, this book has no content whatsoever.\n\n\nCode\n1 + 1\n\n\n[1] 2",
     "crumbs": [
       "Client Interactions"
     ]
@@ -65,7 +45,7 @@
     "href": "statistical_methods.html",
     "title": "Statistical Methods",
     "section": "",
-    "text": "In summary, this book has no content whatsoever.\n\n1 + 1\n\n[1] 2",
+    "text": "In summary, this book has no content whatsoever.\n\n\nCode\n1 + 1\n\n\n[1] 2",
     "crumbs": [
       "Statistical Methods"
     ]
@@ -79,27 +59,6 @@
     "crumbs": [
       "Statistical Methods",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>ANOVA Nuances</span>"
-    ]
-  },
-  {
-    "objectID": "case_studies.html",
-    "href": "case_studies.html",
-    "title": "Case Studies",
-    "section": "",
-    "text": "In summary, this book has no content whatsoever.\n\n1 + 1\n\n[1] 2",
-    "crumbs": [
-      "Case Studies"
-    ]
-  },
-  {
-    "objectID": "example_study.html",
-    "href": "example_study.html",
-    "title": "4  Example Study",
-    "section": "",
-    "text": "In summary, this book has no content whatsoever.\n\n1 + 1\n\n[1] 2",
-    "crumbs": [
-      "Case Studies",
-      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Example Study</span>"
     ]
   },
   {
@@ -144,6 +103,48 @@
     "crumbs": [
       "Statistical Methods",
       "<span class='chapter-number'>3</span>  <span class='chapter-title'>ANOVA Nuances</span>"
+    ]
+  },
+  {
+    "objectID": "exp_design.html",
+    "href": "exp_design.html",
+    "title": "4  Experimental Design",
+    "section": "",
+    "text": "Frey et al. (2024) explains why you can’t remove blocks in a designed experiment.\nThis particular paper should probably go in a section talking about regression models for a designed experiment with a blocking factor. The first example would likely just have treatment and block. \n\n\nCode\n1 + 1\n\n\n[1] 2\n\n\n\n\n\n\n\n\nFrey, Janina, Jens Hartung, Joseph Ogutu, and Hans-Peter Piepho. 2024. “Analyze as Randomized—Why Dropping Block Effects in Designed Experiments Is a Bad Idea.” Agronomy Journal 116 (3): 1371–81. https://doi.org/10.1002/agj2.21570.",
+    "crumbs": [
+      "Statistical Methods",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Experimental Design</span>"
+    ]
+  },
+  {
+    "objectID": "case_studies.html",
+    "href": "case_studies.html",
+    "title": "Case Studies",
+    "section": "",
+    "text": "In summary, this book has no content whatsoever.\n\n\nCode\n1 + 1\n\n\n[1] 2",
+    "crumbs": [
+      "Case Studies"
+    ]
+  },
+  {
+    "objectID": "example_study.html",
+    "href": "example_study.html",
+    "title": "5  Example Study",
+    "section": "",
+    "text": "In summary, this book has no content whatsoever.\n\n\nCode\n1 + 1\n\n\n[1] 2",
+    "crumbs": [
+      "Case Studies",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Example Study</span>"
+    ]
+  },
+  {
+    "objectID": "references.html",
+    "href": "references.html",
+    "title": "References",
+    "section": "",
+    "text": "Frey, Janina, Jens Hartung, Joseph Ogutu, and Hans-Peter Piepho. 2024.\n“Analyze as Randomized—Why Dropping Block Effects in Designed\nExperiments Is a Bad Idea.” Agronomy Journal 116 (3):\n1371–81. https://doi.org/10.1002/agj2.21570.\n\n\nKnuth, Donald E. 1984. “Literate Programming.” Comput.\nJ. 27 (2): 97–111. https://doi.org/10.1093/comjnl/27.2.97.",
+    "crumbs": [
+      "References"
     ]
   }
 ]

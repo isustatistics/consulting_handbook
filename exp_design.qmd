@@ -1,0 +1,7 @@
+# Experimental Design
+
+@frey25blocks explains why you can't remove blocks in a designed experiment.
+
+This particular paper should probably go in a section talking about regression models for a designed experiment with a blocking factor.
+
+We also have Philip's Freedman papers papers about bias with adding covariates (On Regression Adjustments in Experiments with Multiple Treatments's).

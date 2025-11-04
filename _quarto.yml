@@ -1,6 +1,6 @@
 project:
   type: book
-
+  output-dir: docs
 book:
   title: "Consulting Handbook"
   author: "Jarad Niemi, Rebekah Scott"
@@ -16,6 +16,7 @@ book:
     - part: statistical_methods.qmd
       chapters:
       - anova_nuances.qmd
+      - exp_design.qmd
       
     - part: case_studies.qmd
       chapters:
