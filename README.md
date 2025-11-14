@@ -1,8 +1,8 @@
 # Consulting Handbook
 
-A repository for the [Consulting Handbook](https://isustatistics.github.io/consulting_handbook/) for Statistical Consultants in the Department of Statistics at Iowa State University.
+A repository for the [Consulting Handbook](https://isustatistics.github.io/consulting_handbook/) for Statistical Consultants in the Department of Statistics at Iowa State University. The [Statistical Consulting website](https://www.stat.iastate.edu/statistical-consulting) contains more information about our services.
 
-## Proposed outline (as of 2025-10-23)\
+## Proposed outline (as of 2025-10-23).
 
 Preface
 
@@ -10,7 +10,7 @@ Preface
 
 Part I: Client Interactions
 
--   The First Meeting (listen! understand the scientific quetsion, don't solve their problems right then
+-   The First Meeting (listen! understand the scientific question, don't solve their problems right then
 
 -   Active Listening
 
