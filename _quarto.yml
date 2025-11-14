@@ -5,8 +5,10 @@ book:
   title: "Iowa State University Department of Statistics Consulting Handbook"
   author: "Jarad Niemi, Rebekah Scott"
   date: "11/4/2025"
-  search: true
-  site-url: https://www.stat.iastate.edu/statistical-consulting
+  sidebar:
+    tools:
+      - icon: globe
+        href: https://www.stat.iastate.edu/statistical-consulting
   repo-url: https://github.com/isustatistics/consulting_handbook
   repo-branch: main
   

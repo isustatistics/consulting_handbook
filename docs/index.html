@@ -133,6 +133,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div class="sidebar-title mb-0 py-0">
       <a href="./">Iowa State University Department of Statistics Consulting Handbook</a> 
         <div class="sidebar-tools-main">
+    <a href="https://www.stat.iastate.edu/statistical-consulting" title="" class="quarto-navigation-tool px-1" aria-label=""><i class="bi bi-globe"></i></a>
     <a href="https://github.com/isustatistics/consulting_handbook" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
 </div>
     </div>
@@ -418,7 +419,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/www\.stat\.iastate\.edu\/statistical-consulting");
+      var filterRegex = new RegExp('/' + window.location.host + '/');
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
