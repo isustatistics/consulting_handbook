@@ -4,7 +4,7 @@ project:
 book:
   title: "Iowa State University Department of Statistics Consulting Handbook"
   author: "Jarad Niemi, Rebekah Scott"
-  date: "11/4/2025"
+  date: "2026-03-28"
   sidebar:
     tools:
       - icon: globe
@@ -18,6 +18,7 @@ book:
     - part: client_interactions.qmd
       chapters:
       - active_listening.qmd
+      - collect_org_data.qmd
       
     - part: statistical_methods.qmd
       chapters:
